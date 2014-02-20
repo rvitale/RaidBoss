@@ -16,7 +16,7 @@ public class PlayerAttack : MonoBehaviour {
 		if(networkView.isMine){
 			if(canAttack)
 			if(Input.GetButtonDown("Fire1")){
-				networkView.RPC("Attack", RPCMode.AllBuffered);
+				//networkView.RPC("Attack", RPCMode.AllBuffered);
 			}
 		}
 	}
