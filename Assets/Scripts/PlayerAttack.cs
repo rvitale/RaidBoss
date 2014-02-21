@@ -16,16 +16,26 @@ public class PlayerAttack : MonoBehaviour {
 		if(networkView.isMine){
 			if(canAttack)
 			if(Input.GetButtonDown("Fire1")){
-				//networkView.RPC("Attack", RPCMode.AllBuffered);
+				//StartCoroutine(Attack());
+				networkView.RPC("AttackOthers", RPCMode.All);
 			}
 		}
 	}
-	[RPC]
+
 	IEnumerator Attack(){
-
 		attackCollider.SetActive(true);
-			Physics.IgnoreCollision(collider,attackCollider.collider);
-
+		Physics.IgnoreCollision(collider,attackCollider.collider);
+		
+		canAttack = false;
+		yield return new WaitForSeconds(0.1f);
+		attackCollider.SetActive(false);
+		yield return new WaitForSeconds(0.2f);
+		canAttack = true;
+	}
+	[RPC]
+	IEnumerator AttackOthers(){
+		print ("asd");
+		attackCollider.SetActive(true);
 		canAttack = false;
 		yield return new WaitForSeconds(0.1f);
 		attackCollider.SetActive(false);
