@@ -6,14 +6,20 @@ public class AttackCollider : MonoBehaviour {
 	public int dmg;	
 	// Use this for initialization
 	void OnEnable () {
-		//print ("enabled");
+
+	
 	}
 	
 	// Update is called once per frame
 	void OnTriggerEnter (Collider other) {
+
 		if(other.GetComponent<PlayerDefense>()){
+		
+
 			Vector3 dir = -(other.transform.position - transform.position).normalized;
-				other.GetComponent<PlayerDefense>().Hit(dmg,dir);
+			if(transform.parent.networkView.isMine){
+				other.GetComponent<PlayerDefense>().HitMe(dmg,dir);
+			}
 		}
 	}
 }

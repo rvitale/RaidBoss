@@ -10,24 +10,36 @@ public class PlayerDefense : MonoBehaviour {
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-		if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.warrior){
+
+
+	void OnGUI(){
+		if(networkView.isMine){
+			GUI.Label(new Rect (50,50,200,50), "health = "+health);
+		}
+		else{
+			GUI.Label(new Rect (50,100,200,50), "health = "+health);
 
 		}
+
 	}
-	//[RPC]
-	public void Hit(int dmg, Vector3 hitDir){
 
+	public void HitMe(int dmg,Vector3 hitDir){
+		//if(networkView.isMine){
+		//	print ("damagind");
 		//check if shielded
-		if(!Shielded(hitDir)){
-			health -= dmg;
-			print (health);
-			if(health<=0)
-				Die();
-		}
+		if(!Shielded(hitDir))
+			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg,hitDir);
+
+		//}
+	}
+
+	[RPC]
+	void HitMeNetwork(int dmg, Vector3 hitDir){
+
+		health -= dmg;
+		if(health<=0)
+			Die();
+
 	}
 
 	bool Shielded(Vector3 hitDir){
@@ -48,15 +60,19 @@ public class PlayerDefense : MonoBehaviour {
 		}
 
 	}
-	//[RPC]
-	public void HealMe(int dmg){
 
+	public void HealMe(int dmg){
+		networkView.RPC("HealMeNetwork", RPCMode.AllBuffered,dmg);
+	}
+	[RPC]
+	void HealMeNetwork(int dmg){
 		health += dmg;
 		if(health>100)
 			health = 100;
 	}
 	void Die(){
-		Network.Destroy(gameObject);
+		if(networkView.isMine)
+			Network.Destroy(gameObject);
 
 	}
 }

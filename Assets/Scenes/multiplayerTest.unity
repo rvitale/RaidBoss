@@ -101,9 +101,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfdeb92744552c247a561f2c452b224e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 100000, guid: f2bbff43ef4cc354f9684e510000eadb, type: 2}
   playerSpawn: {fileID: 1782683868}
   cameraPrefab: {fileID: 100000, guid: 647a098e9e1d6ba4fbee6c1d612f5960, type: 2}
+  Classes:
+  - {fileID: 100004, guid: 4974ea2018ccf8c4a891ea30dfc3bbfa, type: 2}
+  - {fileID: 100004, guid: 29650b5fe9a0e5a4284fbea7a621d73d, type: 2}
+  - {fileID: 100004, guid: c762d6a7405bf1a418d6d5cbcc9b4903, type: 2}
 --- !u!4 &297114924
 Transform:
   m_ObjectHideFlags: 0

@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void Update() {
+
 		rigidbody.WakeUp();
 		//movement and lookAt
 		if(networkView.isMine){

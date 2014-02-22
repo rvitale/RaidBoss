@@ -22,14 +22,14 @@ public class PlayerAbilities : MonoBehaviour {
 			if(canAttack)
 			if(Input.GetButtonDown("Fire1")){
 				//StartCoroutine(Attack());
-				networkView.RPC("AttackOthers", RPCMode.All);
+				networkView.RPC("CastAttack", RPCMode.All);
 			}
 			if(Input.GetButtonDown("Fire2")){
 				if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.priest){
-					networkView.RPC("Heal", RPCMode.All);
+					networkView.RPC("CastHeal", RPCMode.All);
 				}
 				else if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.rogue){
-					networkView.RPC("EmpoweredAttack", RPCMode.All);
+					networkView.RPC("CastEmpoweredAttack", RPCMode.All);
 				}
 				else if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.warrior){
 					networkView.RPC("Shield", RPCMode.All,true);
@@ -44,7 +44,7 @@ public class PlayerAbilities : MonoBehaviour {
 	}
 
 	[RPC]
-	IEnumerator AttackOthers(){
+	IEnumerator CastAttack(){
 
 		attackCollider.SetActive(true);
 		canAttack = false;
@@ -54,8 +54,7 @@ public class PlayerAbilities : MonoBehaviour {
 		canAttack = true;
 	}
 	[RPC]
-	IEnumerator Heal(){
-	
+	IEnumerator CastHeal(){
 		PMC_PlayerManagerClass.ability.SetActive(true);
 		canAttack = false;
 		yield return new WaitForSeconds(0.1f);
@@ -64,7 +63,7 @@ public class PlayerAbilities : MonoBehaviour {
 		canAttack = true;
 	}
 	[RPC]
-	IEnumerator EmpoweredAttack(){
+	IEnumerator CastEmpoweredAttack(){
 	
 		PMC_PlayerManagerClass.ability.SetActive(true);
 		canAttack = false;

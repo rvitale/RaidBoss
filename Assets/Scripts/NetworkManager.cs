@@ -7,19 +7,44 @@ public class NetworkManager : MonoBehaviour {
 	private const string typeName = "RaidBoss";
 	private const string gameName = "testRoom";
 	private HostData[] hostList;
-	public GameObject playerPrefab;
+	GameObject playerPrefab;
 	public Transform playerSpawn;
 	public GameObject cameraPrefab;
-
+	public GameObject[] Classes;
+	bool startingServer = false;
 	private void StartServer()
 	{
-		Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
-		MasterServer.RegisterHost(typeName, gameName);
+		startingServer = true;
+
 	}
 
 	// Use this for initialization
 	void OnGUI()
 	{
+
+		if(startingServer){
+
+				if(GUI.Button(new Rect(400, 100 , 300, 100), "warrior")){
+					playerPrefab = Classes[0];
+					Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
+					MasterServer.RegisterHost(typeName, gameName);
+					startingServer = false;
+				}
+				if(GUI.Button(new Rect(400, 100 +100, 300, 100), "rogue")){
+					playerPrefab = Classes[1];
+					Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
+					MasterServer.RegisterHost(typeName, gameName);
+					startingServer = false;
+				}
+				if(GUI.Button(new Rect(400, 100 +200, 300, 100), "priest")){
+					playerPrefab = Classes[2];
+					Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
+					MasterServer.RegisterHost(typeName, gameName);
+					startingServer = false;
+				}
+
+		}
+
 		if (!Network.isClient && !Network.isServer)
 		{
 			if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
@@ -30,10 +55,23 @@ public class NetworkManager : MonoBehaviour {
 			
 			if (hostList != null)
 			{
-				for (int i = 0; i < hostList.Length; i++)
+				for (int i = 0; i < Classes.Length; i++)
 				{
-					if (GUI.Button(new Rect(400, 100 + (110 * i), 300, 100), hostList[i].gameName))
+					//if (GUI.Button(new Rect(400, 100 + (110 * i), 300, 100), hostList[i].gameName))
+					//	JoinServer(hostList[i]);
+					if(GUI.Button(new Rect(400, 100 , 300, 100), "warrior")){
+						playerPrefab = Classes[0];
 						JoinServer(hostList[i]);
+					}
+					if(GUI.Button(new Rect(400, 100 + 110 , 300, 100), "rogue")){
+						playerPrefab = Classes[1];
+						JoinServer(hostList[i]);
+					}
+					if(GUI.Button(new Rect(400, 100 + 210 , 300, 100), "priest")){
+						playerPrefab = Classes[2];
+						JoinServer(hostList[i]);
+					}
+
 				}
 			}
 		}
