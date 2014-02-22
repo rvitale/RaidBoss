@@ -1,19 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AttackCollider : MonoBehaviour {
+public class HealCollider : MonoBehaviour {
 	
 	public int dmg;	
 	// Use this for initialization
-	void OnEnable () {
-		//print ("enabled");
+	void Start () {
+
 	}
 	
 	// Update is called once per frame
 	void OnTriggerEnter (Collider other) {
 		if(other.GetComponent<PlayerDefense>()){
-			Vector3 dir = -(other.transform.position - transform.position).normalized;
-				other.GetComponent<PlayerDefense>().Hit(dmg,dir);
+			other.GetComponent<PlayerDefense>().HealMe(dmg);
+
 		}
 	}
 }
+	//	NetworkViewID viewID = other.GetComponent<NetworkView>().viewID;
+	//networkView.RPC(Hit(),viewID,dmg);

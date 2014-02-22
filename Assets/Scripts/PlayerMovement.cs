@@ -6,14 +6,18 @@ public class PlayerMovement : MonoBehaviour {
 	public float jumpSpeed = 8.0F;
 	public float gravity = 20.0F;
 	private Vector3 moveDirection = Vector3.zero;
-	void Start(){
+	PlayerManager PMC_PlayerManagerClass;
+	
+	// Use this for initialization
+	void Start () {
+		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
 		if(networkView.isMine){
 			gameObject.AddComponent<AudioListener>();
 		}
 	}
 
 	void Update() {
-
+		rigidbody.WakeUp();
 		//movement and lookAt
 		if(networkView.isMine){
 			CharacterController controller = GetComponent<CharacterController>();
@@ -30,6 +34,7 @@ public class PlayerMovement : MonoBehaviour {
 			Vector3 faceDirection = new Vector3(moveDirection.x,0,moveDirection.z);
 			if(faceDirection!= Vector3.zero)
 				transform.forward = Vector3.Normalize(faceDirection);
+				PMC_PlayerManagerClass.lookDirection = faceDirection;
 		}
 	}
 }
