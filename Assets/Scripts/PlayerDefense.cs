@@ -6,30 +6,33 @@ public class PlayerDefense : MonoBehaviour {
 	public int health;
 	PlayerManager PMC_PlayerManagerClass;
 	public int shieldWidth;
+	public Transform spawn;
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
+		health = 100;
+//		PMC_PlayerManagerClass.GC_GameController.PD_PlayerDefense.Add(this);// = this;
 	}
 
 
 	void OnGUI(){
-		if(networkView.isMine){
-			GUI.Label(new Rect (50,50,200,50), "health = "+health);
-		}
-		else{
-			GUI.Label(new Rect (50,100,200,50), "health = "+health);
-
-		}
-
+		//if(networkView.isMine)
+		//GUI.Label(new Rect (50,50,200,50)," "+ PMC_PlayerManagerClass.NM_NetworkManager.playerNumber);
+		//print(PMC_PlayerManagerClass.NM_NetworkManager);
+	//	print (PMC_PlayerManagerClass.GC_GameController.playerNumber);
+		if(networkView.isMine)
+		GUI.Label(new Rect (50,50,200,50), "health = "+health);
+		
 	}
 
 	public void HitMe(int dmg,Vector3 hitDir){
 		//if(networkView.isMine){
 		//	print ("damagind");
 		//check if shielded
-		if(!Shielded(hitDir))
+		if(!Shielded(hitDir)){
 			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg,hitDir);
-
+			PMC_PlayerManagerClass.PlaySound("hit");
+		}
 		//}
 	}
 
@@ -48,7 +51,7 @@ public class PlayerDefense : MonoBehaviour {
 		else{
 			float angle = Vector3.Angle(transform.forward.normalized,hitDir);
 			if(angle < shieldWidth){
-				print("parry");
+				PMC_PlayerManagerClass.PlaySound("block");
 				return true;
 
 			}
@@ -71,8 +74,11 @@ public class PlayerDefense : MonoBehaviour {
 			health = 100;
 	}
 	void Die(){
-		if(networkView.isMine)
-			Network.Destroy(gameObject);
+		//if(networkView.isMine)
+			//Network.Destroy(gameObject);
+		transform.position = PMC_PlayerManagerClass.NM_NetworkManager.playerSpawn.position;
+		HealMe(100);
 
 	}
+
 }

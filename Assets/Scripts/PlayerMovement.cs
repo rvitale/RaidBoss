@@ -27,8 +27,11 @@ public class PlayerMovement : MonoBehaviour {
 			moveDirection.z *= speed;
 			if (controller.isGrounded) {
 				moveDirection.y = 0;
-				if (Input.GetButton("Jump"))
-					moveDirection.y = jumpSpeed;			
+				if (Input.GetButton("Jump")){
+					moveDirection.y = jumpSpeed;
+					PMC_PlayerManagerClass.PlaySound("jump");
+				}
+
 			}
 			moveDirection.y -= gravity * Time.deltaTime;
 			controller.Move(moveDirection * Time.deltaTime);

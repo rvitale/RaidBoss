@@ -12,6 +12,10 @@ public class NetworkManager : MonoBehaviour {
 	public GameObject cameraPrefab;
 	public GameObject[] Classes;
 	bool startingServer = false;
+	[HideInInspector]
+	public int playerNumber;
+	public GameController GC_GameController;
+
 	private void StartServer()
 	{
 		startingServer = true;
@@ -97,21 +101,36 @@ public class NetworkManager : MonoBehaviour {
 
 	void OnServerInitialized()
 	{
+		GC_GameController.playerNumber ++;
 		SpawnPlayer();
 	}
 
 	void OnConnectedToServer()
 	{	
-
+		GC_GameController.playerNumber ++;
 		SpawnPlayer();
 	}
-	
+	void OnPlayerConnected(){
+//		print ( Network.connections.Length);
+		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length);
+	}
+
+
 	private void SpawnPlayer()
 	{
 		GameObject player = (GameObject)Network.Instantiate(playerPrefab, playerSpawn.position, Quaternion.identity, 0);
 		player.name = player.networkView.viewID.ToString();
 		GameObject camera = (GameObject)Instantiate(cameraPrefab,player.transform.position,player.transform.rotation);
 		camera.GetComponent<PlayerCamera>().player = player.transform;
+		audio.Play();
+		//GC_GameController.playerNumber ++;
+
+	
+	}
+	[RPC]
+	void UpdatePlayerNumber(int players){
+			playerNumber =players;
+			
 	}
 
 }

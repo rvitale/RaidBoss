@@ -26,6 +26,7 @@ public class PlayerAbilities : MonoBehaviour {
 			}
 			if(Input.GetButtonDown("Fire2")){
 				if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.priest){
+					PMC_PlayerManagerClass.PlaySound("heal");
 					networkView.RPC("CastHeal", RPCMode.All);
 				}
 				else if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.rogue){
