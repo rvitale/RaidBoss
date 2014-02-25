@@ -132,5 +132,5 @@ public class NetworkManager : MonoBehaviour {
 			playerNumber =players;
 			
 	}
-
+	
 }
