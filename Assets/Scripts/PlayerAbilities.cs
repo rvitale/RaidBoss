@@ -19,21 +19,23 @@ public class PlayerAbilities : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(networkView.isMine){
-			if(canAttack)
-			if(Input.GetButtonDown("Fire1")){
-				//StartCoroutine(Attack());
-				networkView.RPC("CastAttack", RPCMode.All);
-			}
-			if(Input.GetButtonDown("Fire2")){
-				if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.priest){
-					PMC_PlayerManagerClass.PlaySound("heal");
-					networkView.RPC("CastHeal", RPCMode.All);
+			if(canAttack){
+				if(Input.GetButtonDown("Fire1")){
+					//StartCoroutine(Attack());
+					networkView.RPC("CastAttack", RPCMode.All);
 				}
-				else if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.rogue){
-					networkView.RPC("CastEmpoweredAttack", RPCMode.All);
-				}
-				else if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.warrior){
-					networkView.RPC("Shield", RPCMode.All,true);
+
+				else if(Input.GetButtonDown("Fire2")){
+					if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.priest){
+						PMC_PlayerManagerClass.PlaySound("heal");
+						networkView.RPC("CastHeal", RPCMode.All);
+					}
+					else if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.rogue){
+						networkView.RPC("CastEmpoweredAttack", RPCMode.All);
+					}
+					else if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.warrior){
+						networkView.RPC("Shield", RPCMode.All,true);
+					}
 				}
 			}
 			if(Input.GetButtonUp("Fire2")){
@@ -41,6 +43,7 @@ public class PlayerAbilities : MonoBehaviour {
 					networkView.RPC("Shield", RPCMode.All,false);
 				}
 			}
+
 		}
 	}
 
