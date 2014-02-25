@@ -20,8 +20,8 @@ public class PlayerDefense : MonoBehaviour {
 		//GUI.Label(new Rect (50,50,200,50)," "+ PMC_PlayerManagerClass.NM_NetworkManager.playerNumber);
 		//print(PMC_PlayerManagerClass.NM_NetworkManager);
 	//	print (PMC_PlayerManagerClass.GC_GameController.playerNumber);
-		if(networkView.isMine)
-		GUI.Label(new Rect (50,50,200,50), "health = "+health);
+		//if(networkView.isMine)
+	//	GUI.Label(new Rect (50,50,200,50), "health = "+health);
 		
 	}
 

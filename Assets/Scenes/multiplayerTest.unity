@@ -244,7 +244,7 @@ GameObject:
   - 65: {fileID: 802785739}
   - 23: {fileID: 802785738}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Stage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -543,6 +543,7 @@ MonoBehaviour:
   playerNumber: 0
   NM_NetworkManager: {fileID: 297114923}
   PD_PlayerDefense: []
+  players: []
 --- !u!4 &1381679779
 Transform:
   m_ObjectHideFlags: 0

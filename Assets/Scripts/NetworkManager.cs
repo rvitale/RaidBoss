@@ -103,6 +103,7 @@ public class NetworkManager : MonoBehaviour {
 	{
 		GC_GameController.playerNumber ++;
 		SpawnPlayer();
+		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length,0);
 	}
 
 	void OnConnectedToServer()
@@ -112,7 +113,7 @@ public class NetworkManager : MonoBehaviour {
 	}
 	void OnPlayerConnected(){
 //		print ( Network.connections.Length);
-		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length);
+		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length,2);
 	}
 
 
@@ -123,14 +124,16 @@ public class NetworkManager : MonoBehaviour {
 		GameObject camera = (GameObject)Instantiate(cameraPrefab,player.transform.position,player.transform.rotation);
 		camera.GetComponent<PlayerCamera>().player = player.transform;
 		audio.Play();
+
 		//GC_GameController.playerNumber ++;
 
 	
 	}
 	[RPC]
-	void UpdatePlayerNumber(int players){
+	IEnumerator UpdatePlayerNumber(int players, int wait){
+		yield return new WaitForSeconds(wait);
 			playerNumber =players;
-			
+			GC_GameController.GetNewPlayer();
 	}
 	
 }
