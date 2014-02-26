@@ -49,8 +49,8 @@ public class PlayerMovement : MonoBehaviour {
 			PMC_PlayerManagerClass.lookDirection = faceDirection;
 		} else {
 			syncTime += Time.deltaTime;
-			rigidbody.position = Vector3.Lerp(startSyncPosition, endSyncPosition, syncTime / syncDelay);
-			rigidbody.rotation = Quaternion.Lerp(startSyncRotation, endSyncRotation, syncTime / syncDelay);
+			transform.position = Vector3.Lerp(startSyncPosition, endSyncPosition, syncTime / syncDelay);
+			transform.rotation = Quaternion.Lerp(startSyncRotation, endSyncRotation, syncTime / syncDelay);
 		}
 	}
 
@@ -61,8 +61,8 @@ public class PlayerMovement : MonoBehaviour {
 		Vector3 syncVelocity = Vector3.zero;
 		if (stream.isWriting)
 		{
-			syncPosition = rigidbody.position;
-			syncRotation = rigidbody.rotation;
+			syncPosition = transform.position;
+			syncRotation = transform.rotation;
 			syncVelocity = rigidbody.velocity;
 			stream.Serialize(ref syncPosition);
 			stream.Serialize(ref syncRotation);
@@ -79,8 +79,8 @@ public class PlayerMovement : MonoBehaviour {
 			syncDelay = currentTime - lastSynchronizationTime;
 			lastSynchronizationTime = currentTime;
 			
-			startSyncPosition = rigidbody.position;
-			startSyncRotation = rigidbody.rotation;
+			startSyncPosition = transform.position;
+			startSyncRotation = transform.rotation;
 			endSyncPosition = syncPosition + syncVelocity * syncDelay;
 			endSyncRotation = syncRotation;
 		}
