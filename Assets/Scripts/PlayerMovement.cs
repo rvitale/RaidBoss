@@ -2,10 +2,14 @@
 using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
-	public float speed = 6.0F;
+	private const float BaseSpeed = 6.0F;
+
+	public float speed = BaseSpeed;
 	public float jumpSpeed = 8.0F;
 	public float gravity = 20.0F;
 	private Vector3 moveDirection = Vector3.zero;
+	public bool canRotate = true;
+
 	PlayerManager PMC_PlayerManagerClass;
 
 	private float lastSynchronizationTime = 0f;
@@ -43,10 +47,12 @@ public class PlayerMovement : MonoBehaviour {
 			}
 			moveDirection.y -= gravity * Time.deltaTime;
 			controller.Move (moveDirection * Time.deltaTime);
-			Vector3 faceDirection = new Vector3 (moveDirection.x, 0, moveDirection.z);
-			if (faceDirection != Vector3.zero)
-					transform.forward = Vector3.Normalize (faceDirection);
-			PMC_PlayerManagerClass.lookDirection = faceDirection;
+			if (canRotate) {
+				Vector3 faceDirection = new Vector3 (moveDirection.x, 0, moveDirection.z);
+				if (faceDirection != Vector3.zero)
+						transform.forward = Vector3.Normalize (faceDirection);
+				PMC_PlayerManagerClass.lookDirection = faceDirection;
+			}
 		} else {
 			syncTime += Time.deltaTime;
 			transform.position = Vector3.Lerp(startSyncPosition, endSyncPosition, syncTime / syncDelay);
@@ -84,5 +90,9 @@ public class PlayerMovement : MonoBehaviour {
 			endSyncPosition = syncPosition + syncVelocity * syncDelay;
 			endSyncRotation = syncRotation;
 		}
+	}
+
+	public void resetSpeed() {
+		speed = BaseSpeed;
 	}
 }
