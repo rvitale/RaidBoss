@@ -3,7 +3,10 @@ using System.Collections;
 
 public class PlayerDefense : MonoBehaviour {
 
-	public int health;
+	public const int RegenMultiplier = 5;
+	public const int MaxHealth = 100;
+
+	public float health;
 	PlayerManager PMC_PlayerManagerClass;
 	public int shieldWidth;
 	public Transform spawn;
@@ -23,6 +26,12 @@ public class PlayerDefense : MonoBehaviour {
 		//if(networkView.isMine)
 	//	GUI.Label(new Rect (50,50,200,50), "health = "+health);
 		
+	}
+
+	void Update() {
+		if (health < MaxHealth) {
+			health += Time.deltaTime * RegenMultiplier;
+		}
 	}
 
 	public void HitMe(int dmg,Vector3 hitDir){
