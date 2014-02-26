@@ -1,18 +1,18 @@
-﻿	using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class PlayerAbilities : MonoBehaviour {
 
 	public GameObject attackCollider;
 
-
 	bool canAttack = true;
 	PlayerManager PMC_PlayerManagerClass;
+	PlayerMovement PMC_PlayerMovementClass;
 
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
-	
+		PMC_PlayerMovementClass = GetComponent<PlayerMovement>();
 
 	}
 	
@@ -78,6 +78,13 @@ public class PlayerAbilities : MonoBehaviour {
 	}
 	[RPC]
 	void Shield(bool shielding){
+		if (shielding) {
+			PMC_PlayerMovementClass.speed /= 1.5F;
+			PMC_PlayerMovementClass.canRotate = false;
+		} else {
+			PMC_PlayerMovementClass.resetSpeed();
+			PMC_PlayerMovementClass.canRotate = true;
+		}
 		PMC_PlayerManagerClass.ability.SetActive(shielding);
 		canAttack = !shielding;
 		PMC_PlayerManagerClass.bIsShielding = shielding;
