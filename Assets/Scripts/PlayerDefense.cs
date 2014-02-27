@@ -10,6 +10,9 @@ public class PlayerDefense : MonoBehaviour {
 	PlayerManager PMC_PlayerManagerClass;
 	public int shieldWidth;
 	public Transform spawn;
+	bool showDeathScreen = false;
+	public Texture2D[] deathScreen;
+	Texture2D myDeathScreen;
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
@@ -19,12 +22,10 @@ public class PlayerDefense : MonoBehaviour {
 
 
 	void OnGUI(){
-		//if(networkView.isMine)
-		//GUI.Label(new Rect (50,50,200,50)," "+ PMC_PlayerManagerClass.NM_NetworkManager.playerNumber);
-		//print(PMC_PlayerManagerClass.NM_NetworkManager);
-	//	print (PMC_PlayerManagerClass.GC_GameController.playerNumber);
-		//if(networkView.isMine)
-	//	GUI.Label(new Rect (50,50,200,50), "health = "+health);
+		if(networkView.isMine && showDeathScreen){
+			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),myDeathScreen);
+		}
+		
 		
 	}
 
@@ -83,11 +84,30 @@ public class PlayerDefense : MonoBehaviour {
 			health = MaxHealth;
 	}
 	void Die(){
-		//if(networkView.isMine)
-			//Network.Destroy(gameObject);
-		transform.position = PMC_PlayerManagerClass.NM_NetworkManager.playerSpawn.position;
-		HealMe(100);
+		if(networkView.isMine){
+			transform.position = PMC_PlayerManagerClass.NM_NetworkManager.playerSpawn.position;
+			HealMe(200);
+			if(!showDeathScreen){
+				StartCoroutine(ShowDeathScreen());
+			}
+		}
 
+	}
+	public void UpdateHealth(){
+		if(networkView.isMine){
+			networkView.RPC("UpdateHealthNetwork", RPCMode.All,health);
+		}
+	}
+	[RPC]
+	void UpdateHealthNetwork(float hp){
+		health = hp;
+	}
+
+	IEnumerator ShowDeathScreen(){
+		myDeathScreen = deathScreen[Random.Range(0,deathScreen.Length)];
+		showDeathScreen = true;
+		yield return new WaitForSeconds(2);
+		showDeathScreen = false;
 	}
 
 }

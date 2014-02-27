@@ -97,6 +97,7 @@ public class NetworkManager : MonoBehaviour {
 	private void JoinServer(HostData hostData)
 	{
 		Network.Connect(hostData);
+		hostList = null;
 	}
 
 	void OnServerInitialized()
@@ -115,7 +116,15 @@ public class NetworkManager : MonoBehaviour {
 //		print ( Network.connections.Length);
 		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length,2);
 	}
+	void OnPlayerDisconnected(NetworkPlayer player){
+		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length,2);
+		Network.RemoveRPCs(player);
+		Network.DestroyPlayerObjects(player);
+	}
+	void OnDisconnectedFromServer(){
 
+		audio.Stop();
+	}
 
 	private void SpawnPlayer()
 	{

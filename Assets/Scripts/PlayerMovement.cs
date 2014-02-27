@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour {
 		if(networkView.isMine){
 			gameObject.AddComponent<AudioListener>();
 		}
+		endSyncRotation = Quaternion.identity;
 	}
 
 	void Update() {

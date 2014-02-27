@@ -503,6 +503,10 @@ MonoBehaviour:
   health: 80
   shieldWidth: 90
   spawn: {fileID: 0}
+  deathScreen:
+  - {fileID: 2800000, guid: 7bf8db10de029ac49a0d0f2c909f4913, type: 3}
+  - {fileID: 2800000, guid: 8f8b7effec2df4746842372e3e162113, type: 3}
+  - {fileID: 2800000, guid: c6eb4220dcf9bff42b2300f6ea81bb01, type: 3}
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1

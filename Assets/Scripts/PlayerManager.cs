@@ -33,7 +33,8 @@ public class PlayerManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void OnGUI () {
-		
+
+
 	}
 	public void PlaySound(string audio){
 		networkView.RPC("PlaySoundNetwork",RPCMode.All,audio);
