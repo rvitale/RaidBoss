@@ -13,7 +13,7 @@ public class PlayerDefense : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
-		health = 100;
+		health = MaxHealth;
 //		PMC_PlayerManagerClass.GC_GameController.PD_PlayerDefense.Add(this);// = this;
 	}
 
@@ -30,23 +30,23 @@ public class PlayerDefense : MonoBehaviour {
 
 	void Update() {
 		if (health < MaxHealth) {
-			health += Time.deltaTime * RegenMultiplier;
+			HealMeNetwork(Time.deltaTime * RegenMultiplier);
 		}
 	}
 
-	public void HitMe(int dmg,Vector3 hitDir){
+	public void HitMe(float dmg,Vector3 hitDir){
 		//if(networkView.isMine){
 		//	print ("damagind");
 		//check if shielded
 		if(!Shielded(hitDir)){
-			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg,hitDir);
+			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg);
 			PMC_PlayerManagerClass.PlaySound("hit");
 		}
 		//}
 	}
 
 	[RPC]
-	void HitMeNetwork(int dmg, Vector3 hitDir){
+	void HitMeNetwork(float dmg){
 
 		health -= dmg;
 		if(health<=0)
@@ -73,14 +73,14 @@ public class PlayerDefense : MonoBehaviour {
 
 	}
 
-	public void HealMe(int dmg){
+	public void HealMe(float dmg){
 		networkView.RPC("HealMeNetwork", RPCMode.AllBuffered,dmg);
 	}
 	[RPC]
-	void HealMeNetwork(int dmg){
+	void HealMeNetwork(float dmg){
 		health += dmg;
-		if(health>100)
-			health = 100;
+		if(health>MaxHealth)
+			health = MaxHealth;
 	}
 	void Die(){
 		//if(networkView.isMine)
