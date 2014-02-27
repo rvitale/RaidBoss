@@ -26,7 +26,7 @@ public class GameController : MonoBehaviour {
 			//if{
 				for(int i=0; i<players.Count;i++){
 				
-						GUI.Label(new Rect (50,100+50*i,200,50), "health = "+players[i].GetComponent<PlayerDefense>().health);
+						GUI.Label(new Rect (50,100+50*i,200,50), "health = "+ ((int) players[i].GetComponent<PlayerDefense>().health));
 				
 				}
 			//}

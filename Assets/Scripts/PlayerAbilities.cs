@@ -3,17 +3,20 @@ using System.Collections;
 
 public class PlayerAbilities : MonoBehaviour {
 
+	public const int AbilityCost = 10;
+
 	public GameObject attackCollider;
 
 	bool canAttack = true;
 	PlayerManager PMC_PlayerManagerClass;
 	PlayerMovement PMC_PlayerMovementClass;
+	PlayerDefense PMC_PlayerDefenseClass;
 
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
 		PMC_PlayerMovementClass = GetComponent<PlayerMovement>();
-
+		PMC_PlayerDefenseClass = GetComponent<PlayerDefense>();
 	}
 	
 	// Update is called once per frame
@@ -25,7 +28,8 @@ public class PlayerAbilities : MonoBehaviour {
 					networkView.RPC("CastAttack", RPCMode.All);
 				}
 
-				else if(Input.GetButtonDown("Fire2")){
+				else if(Input.GetButtonDown("Fire2") && PMC_PlayerDefenseClass.health > AbilityCost){
+					PMC_PlayerDefenseClass.HitMe(AbilityCost, Vector3.zero);
 					if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.priest){
 						PMC_PlayerManagerClass.PlaySound("heal");
 						networkView.RPC("CastHeal", RPCMode.All);
