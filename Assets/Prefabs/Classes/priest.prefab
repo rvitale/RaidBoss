@@ -110,7 +110,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.24484301, y: -5.32036209, z: -3.03323936}
+  m_LocalPosition: {x: .387872696, y: -6.17546225, z: -3.48831654}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
@@ -140,7 +140,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 9ed1d19e7d5b5b3458150a11a81eea31, type: 2}
+  - {fileID: 2100000, guid: d9deaf3d10f373140bac14fe10a2b819, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -449,6 +449,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 7bf8db10de029ac49a0d0f2c909f4913, type: 3}
   - {fileID: 2800000, guid: 8f8b7effec2df4746842372e3e162113, type: 3}
   - {fileID: 2800000, guid: c6eb4220dcf9bff42b2300f6ea81bb01, type: 3}
+  shieldDmgReduction: .5
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -487,6 +488,7 @@ MonoBehaviour:
   speed: 6
   jumpSpeed: 8
   gravity: 20
+  canRotate: 1
 --- !u!143 &14300000
 CharacterController:
   m_ObjectHideFlags: 1

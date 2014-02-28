@@ -15,6 +15,7 @@ public class NetworkManager : MonoBehaviour {
 	[HideInInspector]
 	public int playerNumber;
 	public GameController GC_GameController;
+	public GameObject boss;
 
 	private void StartServer()
 	{
@@ -105,6 +106,7 @@ public class NetworkManager : MonoBehaviour {
 		GC_GameController.playerNumber ++;
 		SpawnPlayer();
 		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length,0);
+		boss.SetActive(true);
 	}
 
 	void OnConnectedToServer()
@@ -132,6 +134,7 @@ public class NetworkManager : MonoBehaviour {
 		player.name = player.networkView.viewID.ToString();
 		GameObject camera = (GameObject)Instantiate(cameraPrefab,player.transform.position,player.transform.rotation);
 		camera.GetComponent<PlayerCamera>().player = player.transform;
+		//Camera.main = camera;
 		audio.Play();
 
 		//GC_GameController.playerNumber ++;

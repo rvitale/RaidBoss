@@ -421,6 +421,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 7bf8db10de029ac49a0d0f2c909f4913, type: 3}
   - {fileID: 2800000, guid: 8f8b7effec2df4746842372e3e162113, type: 3}
   - {fileID: 2800000, guid: c6eb4220dcf9bff42b2300f6ea81bb01, type: 3}
+  shieldDmgReduction: .25
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -459,6 +460,7 @@ MonoBehaviour:
   speed: 6
   jumpSpeed: 8
   gravity: 20
+  canRotate: 1
 --- !u!143 &14300000
 CharacterController:
   m_ObjectHideFlags: 1

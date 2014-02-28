@@ -13,6 +13,7 @@ public class PlayerDefense : MonoBehaviour {
 	bool showDeathScreen = false;
 	public Texture2D[] deathScreen;
 	Texture2D myDeathScreen;
+	public float shieldDmgReduction = 0.5f;
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
@@ -40,9 +41,13 @@ public class PlayerDefense : MonoBehaviour {
 		//	print ("damagind");
 		//check if shielded
 		if(!Shielded(hitDir)){
-			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg);
+
 			PMC_PlayerManagerClass.PlaySound("hit");
 		}
+		else{
+			dmg*=shieldDmgReduction;
+		}
+		networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg);
 		//}
 	}
 

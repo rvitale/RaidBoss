@@ -19,5 +19,10 @@ public class AttackCollider : MonoBehaviour {
 				other.GetComponent<PlayerDefense>().HitMe(dmg,dir);
 			}
 		}
+		else if(other.GetComponent<BossDefence>()){
+			if(transform.parent.networkView.isMine){
+				other.GetComponent<BossDefence>().HitBoss(dmg);
+			}
+		}
 	}
 }
