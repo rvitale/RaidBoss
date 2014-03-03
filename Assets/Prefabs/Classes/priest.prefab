@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,7 +89,7 @@ Transform:
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: .471452177, y: 1, z: 1.52112949}
   m_Children: []
   m_Father: {fileID: 400004}
 --- !u!4 &400002
@@ -110,7 +110,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: .387872696, y: -6.17546225, z: -3.48831654}
+  m_LocalPosition: {x: 38.0038681, y: -8.23997307, z: 5.17410564}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
@@ -442,6 +442,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07a8b5472c3e2b24b91a8ffaae115e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RegenMultiplier: 5
+  currRegen: 5
   health: 80
   shieldWidth: 90
   spawn: {fileID: 0}

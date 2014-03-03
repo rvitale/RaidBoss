@@ -36,7 +36,9 @@ public class PlayerMovement : MonoBehaviour {
 		if (networkView.isMine) {
 			CharacterController controller = GetComponent<CharacterController> ();
 			moveDirection = new Vector3 (Input.GetAxis ("Horizontal"), moveDirection.y, Input.GetAxis ("Vertical"));
-			moveDirection = moveDirection.normalized;
+			//float y = moveDirection.y;
+			//moveDirection.Normalize();
+			//moveDirection.y = y;
 			moveDirection.x *= speed;
 			moveDirection.z *= speed;
 			if (controller.isGrounded) {

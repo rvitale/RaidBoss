@@ -3,7 +3,9 @@ using System.Collections;
 
 public class PlayerDefense : MonoBehaviour {
 
-	public const int RegenMultiplier = 5;
+	public  int RegenMultiplier = 5;
+	[HideInInspector]
+	public  int currRegen = 5;
 	public const int MaxHealth = 100;
 
 	public float health;
@@ -32,7 +34,7 @@ public class PlayerDefense : MonoBehaviour {
 
 	void Update() {
 		if (health < MaxHealth) {
-			HealMeNetwork(Time.deltaTime * RegenMultiplier);
+			HealMeNetwork(Time.deltaTime * currRegen);
 		}
 	}
 

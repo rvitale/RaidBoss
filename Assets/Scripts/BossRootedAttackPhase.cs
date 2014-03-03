@@ -19,20 +19,21 @@ public class BossRootedAttackPhase : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(Network.isServer){
 		//check if there are players in range
-		if(Time.time > lastAllAttack + attackDelay){
-			lastAllAttack = Time.time;
+			if(Time.time > lastAllAttack + attackDelay){
+				lastAllAttack = Time.time;
 
-		
-			if(BM_BossMovement.nearestPlayer){
-				if(Vector3.Distance(BM_BossMovement.nearestPlayer.position,transform.position)<range){
-					//attack
-					networkView.RPC("CastSwipeAttack", RPCMode.All);
-				}
-				else{
-					//allattack
-					networkView.RPC("CastAllAttack", RPCMode.All);
+			
+				if(BM_BossMovement.nearestPlayer){
+					if(Vector3.Distance(BM_BossMovement.nearestPlayer.position,transform.position)<range){
+						//attack
+						networkView.RPC("CastSwipeAttack", RPCMode.All);
+					}
+					else{
+						//allattack
+						networkView.RPC("CastAllAttack", RPCMode.All);
+					}
 				}
 			}
 		}

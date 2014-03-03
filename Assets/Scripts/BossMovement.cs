@@ -7,21 +7,25 @@ public class BossMovement : MonoBehaviour {
 	GameController GC_GameController;
 	[HideInInspector]
 	public Transform nearestPlayer;
+	Vector3 startPosition;
 	// Use this for initialization
 	void Start () {
 
 		GC_GameController = GameObject.Find("GameController").GetComponent<GameController>();
-
+		startPosition = transform.position;
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
-		nearestPlayer = GetNearestPlayer();
-		transform.LookAt(nearestPlayer);
-		Vector3 myRot = transform.eulerAngles;
-		myRot.z=0;
-		myRot.x=0;
-		transform.eulerAngles = myRot;
+		if(Network.isServer){
+			nearestPlayer = GetNearestPlayer();
+			transform.LookAt(nearestPlayer);
+			Vector3 myRot = transform.eulerAngles;
+			myRot.z=0;
+			myRot.x=0;
+			transform.eulerAngles = myRot;
+		}
+		//transform.position = startPosition;
 	}
 
 	public Transform GetNearestPlayer(){

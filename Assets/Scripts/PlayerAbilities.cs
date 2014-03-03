@@ -39,12 +39,14 @@ public class PlayerAbilities : MonoBehaviour {
 					}
 					else if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.warrior){
 						networkView.RPC("Shield", RPCMode.All,true);
+						PMC_PlayerDefenseClass.currRegen = 0;
 					}
 				}
 			}
 			if(Input.GetButtonUp("Fire2")){
 				if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.warrior){
 					networkView.RPC("Shield", RPCMode.All,false);
+					PMC_PlayerDefenseClass.currRegen = PMC_PlayerDefenseClass.RegenMultiplier;
 				}
 			}
 
