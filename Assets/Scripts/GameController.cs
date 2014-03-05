@@ -29,7 +29,6 @@ public class GameController : MonoBehaviour {
 		
 		
 		for(int i=0; i<players.Count;i++){
-			print (players.Count);
 			if(players[i]!=null){
 				GUI.Label(new Rect (50,100+50*i,200,50), "health = "+(int)players[i].GetComponent<PlayerDefense>().health);
 			}
@@ -99,7 +98,6 @@ public class GameController : MonoBehaviour {
 		for(int i=0;i<players.Count;i++){
 			players[i].GetComponent<PlayerDefense>().UpdateHealth();
 		}
-		print(players.Count);
 	}
 	
 	
