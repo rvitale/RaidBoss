@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour {
 	public bool canRotate = true;
 
 	PlayerManager PMC_PlayerManagerClass;
+	PlayerDefense PD_PlayerDefense;
 
 	private float lastSynchronizationTime = 0f;
 	private float syncDelay = 0f;
@@ -23,6 +24,7 @@ public class PlayerMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
+		PD_PlayerDefense = GetComponent<PlayerDefense>();
 		if(networkView.isMine){
 			gameObject.AddComponent<AudioListener>();
 		}
@@ -33,9 +35,14 @@ public class PlayerMovement : MonoBehaviour {
 
 		rigidbody.WakeUp();
 		//movement and lookAt
-		if (networkView.isMine) {
+		if (networkView.isMine ) {
 			CharacterController controller = GetComponent<CharacterController> ();
-			moveDirection = new Vector3 (Input.GetAxis ("Horizontal"), moveDirection.y, Input.GetAxis ("Vertical"));
+			if(!PD_PlayerDefense.isDead){
+				moveDirection = new Vector3 (Input.GetAxis ("Horizontal"), moveDirection.y, Input.GetAxis ("Vertical"));
+			}
+			else{
+				moveDirection = new Vector3 (0, moveDirection.y, 0);
+			}
 			//float y = moveDirection.y;
 			//moveDirection.Normalize();
 			//moveDirection.y = y;
@@ -43,7 +50,7 @@ public class PlayerMovement : MonoBehaviour {
 			moveDirection.z *= speed;
 			if (controller.isGrounded) {
 					moveDirection.y = 0;
-					if (Input.GetButton ("Jump")) {
+					if (Input.GetButton ("Jump")&& !PD_PlayerDefense.isDead) {
 							moveDirection.y = jumpSpeed;
 							PMC_PlayerManagerClass.PlaySound ("jump");
 					}

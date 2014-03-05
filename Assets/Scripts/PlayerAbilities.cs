@@ -9,27 +9,27 @@ public class PlayerAbilities : MonoBehaviour {
 
 	bool canAttack = true;
 	PlayerManager PMC_PlayerManagerClass;
-	PlayerMovement PMC_PlayerMovementClass;
-	PlayerDefense PMC_PlayerDefenseClass;
+	PlayerMovement PM_PlayerMovement;
+	PlayerDefense PD_PlayerDefense;
 
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
-		PMC_PlayerMovementClass = GetComponent<PlayerMovement>();
-		PMC_PlayerDefenseClass = GetComponent<PlayerDefense>();
+		PM_PlayerMovement = GetComponent<PlayerMovement>();
+		PD_PlayerDefense = GetComponent<PlayerDefense>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(networkView.isMine){
+		if(networkView.isMine && !PD_PlayerDefense.isDead){
 			if(canAttack){
 				if(Input.GetButtonDown("Fire1")){
 					//StartCoroutine(Attack());
 					networkView.RPC("CastAttack", RPCMode.All);
 				}
 
-				else if(Input.GetButtonDown("Fire2") && PMC_PlayerDefenseClass.health > AbilityCost){
-					PMC_PlayerDefenseClass.HitMe(AbilityCost, Vector3.zero);
+				else if(Input.GetButtonDown("Fire2") && PD_PlayerDefense.health > AbilityCost){
+					PD_PlayerDefense.HitMe(AbilityCost, Vector3.zero);
 					if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.priest){
 						PMC_PlayerManagerClass.PlaySound("heal");
 						networkView.RPC("CastHeal", RPCMode.All);
@@ -39,14 +39,14 @@ public class PlayerAbilities : MonoBehaviour {
 					}
 					else if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.warrior){
 						networkView.RPC("Shield", RPCMode.All,true);
-						PMC_PlayerDefenseClass.currRegen = 0;
+						PD_PlayerDefense.currRegen = 0;
 					}
 				}
 			}
 			if(Input.GetButtonUp("Fire2")){
 				if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.warrior){
 					networkView.RPC("Shield", RPCMode.All,false);
-					PMC_PlayerDefenseClass.currRegen = PMC_PlayerDefenseClass.RegenMultiplier;
+					PD_PlayerDefense.currRegen = PD_PlayerDefense.RegenMultiplier;
 				}
 			}
 
@@ -85,11 +85,11 @@ public class PlayerAbilities : MonoBehaviour {
 	[RPC]
 	void Shield(bool shielding){
 		if (shielding) {
-			PMC_PlayerMovementClass.speed /= 1.5F;
-			PMC_PlayerMovementClass.canRotate = false;
+			PM_PlayerMovement.speed /= 1.5F;
+			PM_PlayerMovement.canRotate = false;
 		} else {
-			PMC_PlayerMovementClass.resetSpeed();
-			PMC_PlayerMovementClass.canRotate = true;
+			PM_PlayerMovement.resetSpeed();
+			PM_PlayerMovement.canRotate = true;
 		}
 		PMC_PlayerManagerClass.ability.SetActive(shielding);
 		canAttack = !shielding;

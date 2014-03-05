@@ -16,6 +16,8 @@ public class PlayerDefense : MonoBehaviour {
 	public Texture2D[] deathScreen;
 	Texture2D myDeathScreen;
 	public float shieldDmgReduction = 0.5f;
+	public bool isDead = false;
+	public Texture2D redTxt;
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
@@ -28,7 +30,11 @@ public class PlayerDefense : MonoBehaviour {
 		if(networkView.isMine && showDeathScreen){
 			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),myDeathScreen);
 		}
-		
+		if(isDead && networkView.isMine){
+			Color col = new Vector4(1,1,1,0.4f);
+			GUI.color = col;
+			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),redTxt);
+		}
 		
 	}
 
@@ -42,14 +48,16 @@ public class PlayerDefense : MonoBehaviour {
 		//if(networkView.isMine){
 		//	print ("damagind");
 		//check if shielded
-		if(!Shielded(hitDir)){
+		if(!isDead){
+			if(!Shielded(hitDir)){
 
-			PMC_PlayerManagerClass.PlaySound("hit");
+				PMC_PlayerManagerClass.PlaySound("hit");
+			}
+			else{
+				dmg*=shieldDmgReduction;
+			}
+			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg);
 		}
-		else{
-			dmg*=shieldDmgReduction;
-		}
-		networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg);
 		//}
 	}
 
@@ -91,13 +99,16 @@ public class PlayerDefense : MonoBehaviour {
 			health = MaxHealth;
 	}
 	void Die(){
-		if(networkView.isMine){
-			transform.position = PMC_PlayerManagerClass.NM_NetworkManager.playerSpawn.position;
-			HealMe(200);
-			if(!showDeathScreen){
-				StartCoroutine(ShowDeathScreen());
-			}
-		}
+		health = 0;
+		UpdateHealth();
+		isDead = true;
+//		if(networkView.isMine){
+//			transform.position = PMC_PlayerManagerClass.NM_NetworkManager.playerSpawn.position;
+//			HealMe(200);
+//			if(!showDeathScreen){
+//				StartCoroutine(ShowDeathScreen());
+//			}
+//		}
 
 	}
 	public void UpdateHealth(){

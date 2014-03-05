@@ -500,6 +500,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07a8b5472c3e2b24b91a8ffaae115e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RegenMultiplier: 5
+  currRegen: 5
   health: 80
   shieldWidth: 90
   spawn: {fileID: 0}
@@ -507,6 +509,9 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 7bf8db10de029ac49a0d0f2c909f4913, type: 3}
   - {fileID: 2800000, guid: 8f8b7effec2df4746842372e3e162113, type: 3}
   - {fileID: 2800000, guid: c6eb4220dcf9bff42b2300f6ea81bb01, type: 3}
+  shieldDmgReduction: .5
+  isDead: 0
+  redTxt: {fileID: 2800000, guid: fb1f3cdb634082f4aaeb02811a45b978, type: 3}
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -545,6 +550,7 @@ MonoBehaviour:
   speed: 6
   jumpSpeed: 8
   gravity: 20
+  canRotate: 1
 --- !u!143 &14300000
 CharacterController:
   m_ObjectHideFlags: 1
