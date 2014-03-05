@@ -16,7 +16,7 @@ public class AttackCollider : MonoBehaviour {
 		if(other.GetComponent<PlayerDefense>()){
 			Vector3 dir = -(other.transform.position - transform.position).normalized;
 			if(transform.parent.networkView.isMine){
-				other.GetComponent<PlayerDefense>().HitMe(dmg,dir);
+				other.GetComponent<PlayerDefense>().HitMe(dmg,dir,gameObject.tag);
 			}
 		}
 		else if(other.GetComponent<BossDefence>()){

@@ -16,6 +16,7 @@ public class PlayerDefense : MonoBehaviour {
 	public Texture2D[] deathScreen;
 	Texture2D myDeathScreen;
 	public float shieldDmgReduction = 0.5f;
+	[HideInInspector]
 	public bool isDead = false;
 	public Texture2D redTxt;
 	// Use this for initialization
@@ -44,11 +45,12 @@ public class PlayerDefense : MonoBehaviour {
 		}
 	}
 
-	public void HitMe(float dmg,Vector3 hitDir){
+	public void HitMe(float dmg,Vector3 hitDir, string tag){
 		//if(networkView.isMine){
 		//	print ("damagind");
 		//check if shielded
-		if(!isDead){
+
+
 			if(!Shielded(hitDir)){
 
 				PMC_PlayerManagerClass.PlaySound("hit");
@@ -56,18 +58,28 @@ public class PlayerDefense : MonoBehaviour {
 			else{
 				dmg*=shieldDmgReduction;
 			}
-			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg);
-		}
+			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg,tag);
+
+
 		//}
 	}
 
 	[RPC]
-	void HitMeNetwork(float dmg){
-
-		health -= dmg;
-		if(health<=0)
-			Die();
-
+	void HitMeNetwork(float dmg, string tag){
+		if(tag == "playerAttack"){
+			if(isDead){
+				print("asd");
+				HealMe(10);
+				isDead = false;
+			}
+		}
+		else{
+			if(!isDead){
+				health -= dmg;
+				if(health<=0)
+					Die();
+			}
+		}
 	}
 
 	bool Shielded(Vector3 hitDir){
