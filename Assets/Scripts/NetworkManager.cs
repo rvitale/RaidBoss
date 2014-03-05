@@ -5,8 +5,9 @@ public class NetworkManager : MonoBehaviour {
 
 
 	private const string typeName = "RaidBoss";
-	private const string gameName = "testRoom";
+	private string gameName = System.Environment.MachineName;
 	private HostData[] hostList;
+	private HostData selectedGame;
 	GameObject playerPrefab;
 	public Transform playerSpawn;
 	public GameObject cameraPrefab;
@@ -23,60 +24,135 @@ public class NetworkManager : MonoBehaviour {
 
 	}
 
+
+	/* * 
+	 * These functions convert coordinates in a 0-1000 range to
+	 * screen coordinates
+	 */
+	private float translateX(float x) {
+		return x / 1000 * Screen.width;
+	}
+
+	private float translateY(float y) {
+		return y / 1000 * Screen.height;
+	}
+
+	private Rect translateRect(Rect rect) {
+		rect.Set (
+			translateX (rect.xMin),
+			translateY (rect.yMin),
+			translateX (rect.width),
+			translateY (rect.height));
+
+		return rect;
+	}
+
 	// Use this for initialization
 	void OnGUI()
 	{
+		float mainButtonSpacing = 5;
+
+		float mainButtonX = 50;
+		float mainButtonY = 50;
+		float mainButtonW = (1000.0f - mainButtonX * 2 - mainButtonSpacing * 2) / 3;
+		float mainButtonH = 100;
+
+
+		float hostListBoxX = mainButtonX + mainButtonW + mainButtonSpacing;
+		float hostListBoxY = mainButtonY;
+		float hostListBoxW = mainButtonW;
+		
+		float hostEntryHeight = 50;
+		float hostEntrySpacing = 5;
+		
+		float hostListBoxHeaderHeight = 40;
+
+		float hostListBoxH = -1;
 
 		if(startingServer){
 
-				if(GUI.Button(new Rect(400, 100 , 300, 100), "warrior")){
+			float classesX = mainButtonX + mainButtonW + mainButtonSpacing;
+			float classesY = mainButtonY;
+			float classesW = mainButtonW;
+			float classesH = mainButtonH;
+
+			if (hostList == null) {
+				if(GUI.Button(translateRect(new Rect(classesX, classesY , classesW, classesH)), "warrior")) {
 					playerPrefab = Classes[0];
 					Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 					MasterServer.RegisterHost(typeName, gameName);
 					startingServer = false;
 				}
-				if(GUI.Button(new Rect(400, 100 +100, 300, 100), "rogue")){
+
+				if(GUI.Button(translateRect(new Rect(classesX, classesY + mainButtonSpacing + classesH , classesW, classesH)), "rogue")) {
 					playerPrefab = Classes[1];
 					Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 					MasterServer.RegisterHost(typeName, gameName);
 					startingServer = false;
 				}
-				if(GUI.Button(new Rect(400, 100 +200, 300, 100), "priest")){
+				if(GUI.Button(translateRect(new Rect(classesX, classesY + (mainButtonSpacing * 2) + (classesH * 2) , classesW, classesH)), "priest")) {
 					playerPrefab = Classes[2];
 					Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 					MasterServer.RegisterHost(typeName, gameName);
 					startingServer = false;
 				}
+			}
 
 		}
 
 		if (!Network.isClient && !Network.isServer)
 		{
-			if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
-				StartServer();
-			
-			if (GUI.Button(new Rect(100, 250, 250, 100), "Refresh Hosts"))
-				RefreshHostList();
-			
-			if (hostList != null)
-			{
-				for (int i = 0; i < Classes.Length; i++)
-				{
-					//if (GUI.Button(new Rect(400, 100 + (110 * i), 300, 100), hostList[i].gameName))
-					//	JoinServer(hostList[i]);
-					if(GUI.Button(new Rect(400, 100 , 300, 100), "warrior")){
-						playerPrefab = Classes[0];
-						JoinServer(hostList[i]);
-					}
-					if(GUI.Button(new Rect(400, 100 + 110 , 300, 100), "rogue")){
-						playerPrefab = Classes[1];
-						JoinServer(hostList[i]);
-					}
-					if(GUI.Button(new Rect(400, 100 + 210 , 300, 100), "priest")){
-						playerPrefab = Classes[2];
-						JoinServer(hostList[i]);
-					}
 
+			if (GUI.Button(translateRect(new Rect(mainButtonX, mainButtonY, mainButtonW, mainButtonH)), "Start Server")) {
+				hostList = null;
+				selectedGame = null;
+				StartServer();
+			}
+			
+			if (GUI.Button(translateRect(new Rect(mainButtonX, mainButtonY + mainButtonH + mainButtonSpacing, mainButtonW, mainButtonH)), "Refresh Hosts")) {
+				RefreshHostList();
+			}
+			
+			if (!startingServer && hostList != null && hostList.Length > 0)
+			{
+
+				hostListBoxH = hostListBoxHeaderHeight + (hostList.Length * hostEntryHeight) + ((hostList.Length + 3) * hostEntrySpacing);
+
+				GUI.Box(translateRect(new Rect(hostListBoxX, hostListBoxY, hostListBoxW, hostListBoxH)), "Host List");
+
+				for (int i=0; i<hostList.Length; i++) {
+					if (GUI.Button(translateRect(new Rect(hostListBoxX + hostEntrySpacing, 
+					                                      hostListBoxY + hostListBoxHeaderHeight + (i * hostEntryHeight) + (Mathf.Min(i,1) * hostEntrySpacing), 
+					                                      hostListBoxW - (2 * hostEntrySpacing), 
+					                                      hostEntryHeight)), 
+					               hostList[i].gameName)) {
+						selectedGame = hostList[i];
+					}
+				}
+
+				if (selectedGame != null) {
+
+					float classesX = hostListBoxX + hostListBoxW + mainButtonSpacing;
+					float classesY = mainButtonY;
+					float classesW = mainButtonW;
+					float classesH = mainButtonH;
+
+					for (int i = 0; i < Classes.Length; i++)
+					{
+						if(GUI.Button(translateRect(new Rect(classesX, classesY , classesW, classesH)), "warrior")){
+							playerPrefab = Classes[0];
+							JoinServer(hostList[i]);
+						}
+						if(GUI.Button(translateRect(new Rect(classesX, classesY + classesH + mainButtonSpacing , classesW, classesH)), "rogue")){
+							playerPrefab = Classes[1];
+							JoinServer(hostList[i]);
+						}
+						if(GUI.Button(translateRect(new Rect(classesX, classesY + classesH*2 + mainButtonSpacing*2 , classesW, classesH)), "priest")){
+							playerPrefab = Classes[2];
+							JoinServer(hostList[i]);
+						}
+						
+					}
 				}
 			}
 		}
@@ -91,8 +167,11 @@ public class NetworkManager : MonoBehaviour {
 	
 	void OnMasterServerEvent(MasterServerEvent msEvent)
 	{
-		if (msEvent == MasterServerEvent.HostListReceived)
+		if (msEvent == MasterServerEvent.HostListReceived) {
+			startingServer = false;
+			selectedGame = null;
 			hostList = MasterServer.PollHostList();
+		}
 	}
 
 	private void JoinServer(HostData hostData)
