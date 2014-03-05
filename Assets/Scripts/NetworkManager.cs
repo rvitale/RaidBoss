@@ -203,7 +203,12 @@ public class NetworkManager : MonoBehaviour {
 
 	private void JoinServer(HostData hostData)
 	{
-		Network.Connect(hostData.ip[0], hostData.port);
+		if (selectingIP) {
+			Network.Connect (hostData.ip [0], hostData.port);
+		} else {
+			Network.Connect(hostData);
+		}
+
 		hostList = null;
 	}
 
