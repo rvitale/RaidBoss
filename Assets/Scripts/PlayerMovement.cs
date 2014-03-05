@@ -43,9 +43,6 @@ public class PlayerMovement : MonoBehaviour {
 			else{
 				moveDirection = new Vector3 (0, moveDirection.y, 0);
 			}
-			//float y = moveDirection.y;
-			//moveDirection.Normalize();
-			//moveDirection.y = y;
 			moveDirection.x *= speed;
 			moveDirection.z *= speed;
 			if (controller.isGrounded) {
@@ -57,7 +54,7 @@ public class PlayerMovement : MonoBehaviour {
 
 			}
 			moveDirection.y -= gravity * Time.deltaTime;
-			controller.Move (moveDirection * Time.deltaTime);
+			controller.Move (Vector3.Normalize(moveDirection) * speed * Time.deltaTime);
 			if (canRotate) {
 				Vector3 faceDirection = new Vector3 (moveDirection.x, 0, moveDirection.z);
 				if (faceDirection != Vector3.zero)
