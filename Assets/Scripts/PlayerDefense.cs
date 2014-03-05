@@ -40,7 +40,7 @@ public class PlayerDefense : MonoBehaviour {
 	}
 
 	void Update() {
-		if (health < MaxHealth) {
+		if (health < MaxHealth && networkView.isMine && !PMC_PlayerManagerClass.bIsShielding && !isDead) {
 			HealMeNetwork(Time.deltaTime * currRegen);
 		}
 	}
