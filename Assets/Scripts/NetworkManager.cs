@@ -5,6 +5,7 @@ public class NetworkManager : MonoBehaviour {
 
 
 	private const string typeName = "RaidBoss";
+	private const int serverPort = 25000;
 	private string gameName = System.Environment.MachineName;
 	private HostData[] hostList;
 	private HostData selectedGame;
@@ -12,7 +13,9 @@ public class NetworkManager : MonoBehaviour {
 	public Transform playerSpawn;
 	public GameObject cameraPrefab;
 	public GameObject[] Classes;
-	bool startingServer = false;
+	private bool startingServer = false;
+	private bool selectingIP = false;
+	private string ipText = "";
 	[HideInInspector]
 	public int playerNumber;
 	public GameController GC_GameController;
@@ -79,20 +82,20 @@ public class NetworkManager : MonoBehaviour {
 			if (hostList == null) {
 				if(GUI.Button(translateRect(new Rect(classesX, classesY , classesW, classesH)), "warrior")) {
 					playerPrefab = Classes[0];
-					Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
+					Network.InitializeServer(4, serverPort, !Network.HavePublicAddress());
 					MasterServer.RegisterHost(typeName, gameName);
 					startingServer = false;
 				}
 
 				if(GUI.Button(translateRect(new Rect(classesX, classesY + mainButtonSpacing + classesH , classesW, classesH)), "rogue")) {
 					playerPrefab = Classes[1];
-					Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
+					Network.InitializeServer(4, serverPort, !Network.HavePublicAddress());
 					MasterServer.RegisterHost(typeName, gameName);
 					startingServer = false;
 				}
 				if(GUI.Button(translateRect(new Rect(classesX, classesY + (mainButtonSpacing * 2) + (classesH * 2) , classesW, classesH)), "priest")) {
 					playerPrefab = Classes[2];
-					Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
+					Network.InitializeServer(4, serverPort, !Network.HavePublicAddress());
 					MasterServer.RegisterHost(typeName, gameName);
 					startingServer = false;
 				}
@@ -106,11 +109,35 @@ public class NetworkManager : MonoBehaviour {
 			if (GUI.Button(translateRect(new Rect(mainButtonX, mainButtonY, mainButtonW, mainButtonH)), "Start Server")) {
 				hostList = null;
 				selectedGame = null;
+				selectingIP = false;
 				StartServer();
 			}
 			
 			if (GUI.Button(translateRect(new Rect(mainButtonX, mainButtonY + mainButtonH + mainButtonSpacing, mainButtonW, mainButtonH)), "Refresh Hosts")) {
 				RefreshHostList();
+			}
+
+			if (GUI.Button(translateRect(new Rect(mainButtonX, mainButtonY + mainButtonH*2 + mainButtonSpacing*2, mainButtonW, mainButtonH)), "Connect by IP")) {
+				hostList = null;
+				selectedGame = null;
+				startingServer = false;
+				selectingIP = true;
+			}
+
+			if (selectingIP) {
+				float ipFieldX = hostListBoxX;
+				float ipFieldY = hostListBoxY;
+				float ipFieldW = hostListBoxW;
+				float ipFieldH = mainButtonH;
+
+				float ipFieldSpacing = mainButtonSpacing;
+
+				ipText = GUI.TextField(translateRect(new Rect(ipFieldX, ipFieldY, ipFieldW, ipFieldH)), ipText);
+				if (GUI.Button(translateRect(new Rect(ipFieldX, ipFieldY + ipFieldH + ipFieldSpacing, ipFieldW, ipFieldH)), "Join")) {
+					selectedGame = new HostData();
+					selectedGame.ip = new string[] { ipText };
+					selectedGame.port = serverPort;
+				}
 			}
 			
 			if (!startingServer && hostList != null && hostList.Length > 0)
@@ -129,29 +156,28 @@ public class NetworkManager : MonoBehaviour {
 						selectedGame = hostList[i];
 					}
 				}
+			}
 
-				if (selectedGame != null) {
+			if (selectedGame != null) {
 
-					float classesX = hostListBoxX + hostListBoxW + mainButtonSpacing;
-					float classesY = mainButtonY;
-					float classesW = mainButtonW;
-					float classesH = mainButtonH;
+				float classesX = hostListBoxX + hostListBoxW + mainButtonSpacing;
+				float classesY = mainButtonY;
+				float classesW = mainButtonW;
+				float classesH = mainButtonH;
 
-					for (int i = 0; i < Classes.Length; i++)
-					{
-						if(GUI.Button(translateRect(new Rect(classesX, classesY , classesW, classesH)), "warrior")){
-							playerPrefab = Classes[0];
-							JoinServer(hostList[i]);
-						}
-						if(GUI.Button(translateRect(new Rect(classesX, classesY + classesH + mainButtonSpacing , classesW, classesH)), "rogue")){
-							playerPrefab = Classes[1];
-							JoinServer(hostList[i]);
-						}
-						if(GUI.Button(translateRect(new Rect(classesX, classesY + classesH*2 + mainButtonSpacing*2 , classesW, classesH)), "priest")){
-							playerPrefab = Classes[2];
-							JoinServer(hostList[i]);
-						}
-						
+				for (int i = 0; i < Classes.Length; i++)
+				{
+					if(GUI.Button(translateRect(new Rect(classesX, classesY , classesW, classesH)), "warrior")){
+						playerPrefab = Classes[0];
+						JoinServer(selectedGame);
+					}
+					if(GUI.Button(translateRect(new Rect(classesX, classesY + classesH + mainButtonSpacing , classesW, classesH)), "rogue")){
+						playerPrefab = Classes[1];
+						JoinServer(selectedGame);
+					}
+					if(GUI.Button(translateRect(new Rect(classesX, classesY + classesH*2 + mainButtonSpacing*2 , classesW, classesH)), "priest")){
+						playerPrefab = Classes[2];
+						JoinServer(selectedGame);
 					}
 				}
 			}
@@ -170,13 +196,14 @@ public class NetworkManager : MonoBehaviour {
 		if (msEvent == MasterServerEvent.HostListReceived) {
 			startingServer = false;
 			selectedGame = null;
+			selectingIP = false;
 			hostList = MasterServer.PollHostList();
 		}
 	}
 
 	private void JoinServer(HostData hostData)
 	{
-		Network.Connect(hostData);
+		Network.Connect(hostData.ip[0], hostData.port);
 		hostList = null;
 	}
 
