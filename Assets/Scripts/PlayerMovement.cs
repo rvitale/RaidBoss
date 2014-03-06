@@ -43,8 +43,13 @@ public class PlayerMovement : MonoBehaviour {
 			else{
 				moveDirection = new Vector3 (0, moveDirection.y, 0);
 			}
+			float y = moveDirection.y;
 			moveDirection.x *= speed;
 			moveDirection.z *= speed;
+			moveDirection.y = 0;
+			moveDirection.Normalize();
+			moveDirection *= speed;
+			moveDirection = new Vector3(moveDirection.x, y, moveDirection.z);
 			if (controller.isGrounded) {
 					moveDirection.y = 0;
 					if (Input.GetButton ("Jump")&& !PD_PlayerDefense.isDead) {
@@ -54,7 +59,7 @@ public class PlayerMovement : MonoBehaviour {
 
 			}
 			moveDirection.y -= gravity * Time.deltaTime;
-			controller.Move (Vector3.Normalize(moveDirection) * speed * Time.deltaTime);
+			controller.Move (moveDirection * Time.deltaTime);
 			if (canRotate) {
 				Vector3 faceDirection = new Vector3 (moveDirection.x, 0, moveDirection.z);
 				if (faceDirection != Vector3.zero)
