@@ -58,19 +58,21 @@ public class PlayerDefense : MonoBehaviour {
 			else{
 				dmg*=shieldDmgReduction;
 			}
-			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg,tag);
+			networkView.RPC("LooseHealthNetwork", RPCMode.AllBuffered,dmg,tag);
 
 
 		//}
 	}
 
+
 	[RPC]
-	void HitMeNetwork(float dmg, string tag){
+	void LooseHealthNetwork(float dmg, string tag){
 		if(tag == "playerAttack"){
 			if(isDead){
-				print("asd");
+
 				HealMe(10);
 				isDead = false;
+				transform.eulerAngles = new Vector3(0,0,0);
 			}
 		}
 		else{
@@ -106,11 +108,15 @@ public class PlayerDefense : MonoBehaviour {
 	}
 	[RPC]
 	void HealMeNetwork(float dmg){
+
 		health += dmg;
-		if(health>MaxHealth)
+		if(health>MaxHealth){
 			health = MaxHealth;
+		}
+		UpdateHealth();
 	}
 	void Die(){
+		transform.eulerAngles = new Vector3(90,0,0);
 		health = 0;
 		UpdateHealth();
 		isDead = true;

@@ -29,8 +29,10 @@ public class HealCollider : MonoBehaviour {
 			}
 		//}
 */
-		if(transform.parent.networkView.isMine){
-			other.GetComponent<PlayerDefense>().HealMe(dmg);
+		if(other.GetComponent<PlayerDefense>()){
+			if(transform.parent.networkView.isMine){
+				other.GetComponent<PlayerDefense>().HealMe(dmg);
+			}
 		}
 	}
 }

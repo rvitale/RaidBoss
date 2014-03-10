@@ -41,16 +41,21 @@ public class BossRootedAttackPhase : MonoBehaviour {
 	[RPC]
 	IEnumerator CastSwipeAttack(){
 
+
 		swipeAttack.SetActive(true);
 		swipeAttack.collider.enabled = false;
 		swipeAttack.renderer.material.color = Color.yellow;
 		yield return new WaitForSeconds(0.3f);
 		swipeAttack.collider.enabled = true;
+		Physics.IgnoreCollision(swipeAttack.collider,collider);
 		swipeAttack.renderer.material.color = Color.red;
 		yield return new WaitForSeconds(0.3f);
 		swipeAttack.collider.enabled = false;
 		swipeAttack.renderer.material.color = Color.yellow;
 		swipeAttack.SetActive(false);
+
+	
+	
 	}
 
 
@@ -58,6 +63,7 @@ public class BossRootedAttackPhase : MonoBehaviour {
 	IEnumerator CastAllAttack(){
 
 		allAttack.SetActive(true);
+		Physics.IgnoreCollision(allAttack.collider,collider);
 		Vector3 startSize = allAttack.transform.localScale;
 		while (allAttack.transform.localScale.x<20){
 			Vector3 size = allAttack.transform.localScale;

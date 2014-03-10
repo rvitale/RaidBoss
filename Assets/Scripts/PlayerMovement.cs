@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour {
 			else{
 				moveDirection = new Vector3 (0, moveDirection.y, 0);
 			}
+//			print (moveDirection);
 			float y = moveDirection.y;
 			moveDirection.x *= speed;
 			moveDirection.z *= speed;
@@ -50,6 +51,7 @@ public class PlayerMovement : MonoBehaviour {
 			moveDirection.Normalize();
 			moveDirection *= speed;
 			moveDirection = new Vector3(moveDirection.x, y, moveDirection.z);
+		//	print (moveDirection);
 			if (controller.isGrounded) {
 					moveDirection.y = 0;
 					if (Input.GetButton ("Jump")&& !PD_PlayerDefense.isDead) {
@@ -105,7 +107,7 @@ public class PlayerMovement : MonoBehaviour {
 		}
 	}
 
-	public void resetSpeed() {
+	public void ResetSpeed() {
 		speed = BaseSpeed;
 	}
 }
