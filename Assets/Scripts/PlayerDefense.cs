@@ -19,7 +19,7 @@ public class PlayerDefense : MonoBehaviour {
 	[HideInInspector]
 	public bool isDead = false;
 	public Texture2D redTxt;
-
+	public GameObject hitParticle;
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
@@ -49,6 +49,8 @@ public class PlayerDefense : MonoBehaviour {
 
 		if(!Shielded(hitDir)){
 			PMC_PlayerManagerClass.PlaySound("hit");
+				Quaternion rotation = Quaternion.LookRotation(hitDir);
+				Network.Instantiate(hitParticle,transform.position,rotation,0);
 		}
 		else{
 			dmg*=shieldDmgReduction;

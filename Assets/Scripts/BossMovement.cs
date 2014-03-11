@@ -7,12 +7,11 @@ public class BossMovement : MonoBehaviour {
 	GameController GC_GameController;
 	[HideInInspector]
 	public Transform nearestPlayer;
-	Vector3 startPosition;
+
 	// Use this for initialization
 	void Start () {
 
 		GC_GameController = GameObject.Find("GameController").GetComponent<GameController>();
-		startPosition = transform.position;
 	}
 	
 	// Update is called once per frame
