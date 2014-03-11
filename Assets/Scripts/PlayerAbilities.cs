@@ -29,7 +29,7 @@ public class PlayerAbilities : MonoBehaviour {
 				}
 
 				else if(Input.GetButtonDown("Fire2") && PD_PlayerDefense.health > AbilityCost){
-					networkView.RPC("LooseHealthNetwork", RPCMode.AllBuffered,AbilityCost,"");
+					PD_PlayerDefense.LoseHealth(AbilityCost,"");
 					if(PMC_PlayerManagerClass.myClass == PlayerManager.playerClasses.priest){
 						PMC_PlayerManagerClass.PlaySound("heal");
 						networkView.RPC("CastHeal", RPCMode.All);

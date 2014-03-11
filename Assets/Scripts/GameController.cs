@@ -95,9 +95,6 @@ public class GameController : MonoBehaviour {
 			}
 			
 		}
-		for(int i=0;i<players.Count;i++){
-			players[i].GetComponent<PlayerDefense>().UpdateHealth();
-		}
 	}
 	
 	

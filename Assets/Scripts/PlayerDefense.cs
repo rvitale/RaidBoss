@@ -19,11 +19,11 @@ public class PlayerDefense : MonoBehaviour {
 	[HideInInspector]
 	public bool isDead = false;
 	public Texture2D redTxt;
+
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
 		health = MaxHealth;
-//		PMC_PlayerManagerClass.GC_GameController.PD_PlayerDefense.Add(this);// = this;
 	}
 
 
@@ -41,35 +41,25 @@ public class PlayerDefense : MonoBehaviour {
 
 	void Update() {
 		if (health < MaxHealth && networkView.isMine && !PMC_PlayerManagerClass.bIsShielding && !isDead) {
-			HealMeNetwork(Time.deltaTime * currRegen);
+			HealMe(Time.deltaTime * currRegen);
 		}
 	}
 
 	public void HitMe(float dmg,Vector3 hitDir, string tag){
-		//if(networkView.isMine){
-		//	print ("damagind");
-		//check if shielded
 
+		if(!Shielded(hitDir)){
+			PMC_PlayerManagerClass.PlaySound("hit");
+		}
+		else{
+			dmg*=shieldDmgReduction;
+		}
 
-			if(!Shielded(hitDir)){
-
-				PMC_PlayerManagerClass.PlaySound("hit");
-			}
-			else{
-				dmg*=shieldDmgReduction;
-			}
-			networkView.RPC("LooseHealthNetwork", RPCMode.AllBuffered,dmg,tag);
-
-
-		//}
+		LoseHealth(dmg, tag);
 	}
 
-
-	[RPC]
-	void LooseHealthNetwork(float dmg, string tag){
+	public void LoseHealth(float dmg, string tag){
 		if(tag == "playerAttack"){
 			if(isDead){
-
 				HealMe(10);
 				isDead = false;
 				transform.eulerAngles = new Vector3(0,0,0);
@@ -103,40 +93,17 @@ public class PlayerDefense : MonoBehaviour {
 
 	}
 
-	public void HealMe(float dmg){
-		networkView.RPC("HealMeNetwork", RPCMode.AllBuffered,dmg);
-	}
-	[RPC]
-	void HealMeNetwork(float dmg){
-
+	public void HealMe(float dmg) {
 		health += dmg;
-		if(health>MaxHealth){
+		if(health>MaxHealth) {
 			health = MaxHealth;
 		}
-		UpdateHealth();
 	}
+
 	void Die(){
 		transform.eulerAngles = new Vector3(90,0,0);
 		health = 0;
-		UpdateHealth();
 		isDead = true;
-//		if(networkView.isMine){
-//			transform.position = PMC_PlayerManagerClass.NM_NetworkManager.playerSpawn.position;
-//			HealMe(200);
-//			if(!showDeathScreen){
-//				StartCoroutine(ShowDeathScreen());
-//			}
-//		}
-
-	}
-	public void UpdateHealth(){
-		if(networkView.isMine){
-			networkView.RPC("UpdateHealthNetwork", RPCMode.All,health);
-		}
-	}
-	[RPC]
-	void UpdateHealthNetwork(float hp){
-		health = hp;
 	}
 
 	IEnumerator ShowDeathScreen(){

@@ -30,7 +30,7 @@ public class HealCollider : MonoBehaviour {
 		//}
 */
 		if(other.GetComponent<PlayerDefense>()){
-			if(transform.parent.networkView.isMine){
+			if(other.networkView.isMine){
 				other.GetComponent<PlayerDefense>().HealMe(dmg);
 			}
 		}
