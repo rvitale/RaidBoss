@@ -12,14 +12,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	PlayerManager PMC_PlayerManagerClass;
 	PlayerDefense PD_PlayerDefense;
-
-	private float lastSynchronizationTime = 0f;
-	private float syncDelay = 0f;
-	private float syncTime = 0f;
-	private Vector3 startSyncPosition;
-	private Vector3 endSyncPosition;
-	private Quaternion startSyncRotation;
-	private Quaternion endSyncRotation;
+	
 	private float lastX = 0f;
 	private float lastZ = 0f;
 
