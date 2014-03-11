@@ -13,6 +13,16 @@ public class PlayerMovement : MonoBehaviour {
 	PlayerManager PMC_PlayerManagerClass;
 	PlayerDefense PD_PlayerDefense;
 
+	private float lastSynchronizationTime = 0f;
+	private float syncDelay = 0f;
+	private float syncTime = 0f;
+	private Vector3 startSyncPosition;
+	private Vector3 endSyncPosition;
+	private Quaternion startSyncRotation;
+	private Quaternion endSyncRotation;
+	private float lastX = 0f;
+	private float lastZ = 0f;
+
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
@@ -29,7 +39,25 @@ public class PlayerMovement : MonoBehaviour {
 		if (networkView.isMine ) {
 			CharacterController controller = GetComponent<CharacterController> ();
 			if(!PD_PlayerDefense.isDead){
-				moveDirection = new Vector3 (Input.GetAxis ("Horizontal"), moveDirection.y, Input.GetAxis ("Vertical"));
+				float x = Input.GetAxis ("Horizontal");
+				float z = Input.GetAxis ("Vertical");
+				if (Mathf.Abs(x) != 0) {
+					if (Mathf.Abs(x) < Mathf.Abs(lastX)) {
+						x = 0;
+					} else {
+						x = x / Mathf.Abs(x);
+					}
+				}
+				if (Mathf.Abs(z) != 0) {
+					if (Mathf.Abs(z) < Mathf.Abs(lastZ)) {
+						z = 0;
+					} else {
+						z = z / Mathf.Abs(z);
+					}
+				}
+				lastX = Input.GetAxis ("Horizontal");
+				lastZ = Input.GetAxis ("Vertical");
+				moveDirection = new Vector3 (x, moveDirection.y, z);
 			}
 			else{
 				moveDirection = new Vector3 (0, moveDirection.y, 0);
