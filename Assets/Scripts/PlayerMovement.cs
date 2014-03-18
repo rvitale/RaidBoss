@@ -51,6 +51,7 @@ public class PlayerMovement : MonoBehaviour {
 				lastX = Input.GetAxis ("Horizontal");
 				lastZ = Input.GetAxis ("Vertical");
 				moveDirection = new Vector3 (x, moveDirection.y, z);
+
 			}
 			else{
 				moveDirection = new Vector3 (0, moveDirection.y, 0);

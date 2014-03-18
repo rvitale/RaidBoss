@@ -13,10 +13,10 @@ public class AttackCollider : MonoBehaviour {
 	// Update is called once per frame
 	void OnTriggerEnter (Collider other) {
 
-
+		Vector3 dir = -(other.transform.position - transform.position).normalized;
 
 		if(other.GetComponent<PlayerDefense>()){
-			Vector3 dir = -(other.transform.position - transform.position).normalized;
+
 			if(transform.parent.networkView.isMine){
 				other.GetComponent<PlayerDefense>().HitMe(dmg,dir,gameObject.tag);
 
@@ -24,7 +24,7 @@ public class AttackCollider : MonoBehaviour {
 		}
 		else if(other.GetComponent<BossDefence>()){
 			if(transform.parent.networkView.isMine){
-				other.GetComponent<BossDefence>().HitBoss(dmg);
+				other.GetComponent<BossDefence>().HitBoss(dmg,dir);
 			}
 		}
 	}

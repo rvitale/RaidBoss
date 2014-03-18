@@ -11,10 +11,15 @@ public class BossDefence : MonoBehaviour {
 	public GameObject bossGUI;
 	public Transform healthBar;
 	float maxHb = 0.9829132f;
+	public GameObject hitParticle;
 	void Start(){
-		bossGUI.SetActive(true);
 		health = maxHealth;
-		UpdateHealthBar();
+		if(bossGUI){
+			bossGUI.SetActive(true);
+		}
+		if(healthBar){
+			UpdateHealthBar();
+		}
 	}
 	void Update() {
 		rigidbody.WakeUp();
@@ -23,20 +28,25 @@ public class BossDefence : MonoBehaviour {
 		//}
 	}
 	
-	public void HitBoss(float dmg){
+	public void HitBoss(float dmg,Vector3 dir){
 		if(!invulnerable){
-			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg);
-			//PMC_PlayerManagerClass.PlaySound("hit");
+			networkView.RPC("HitMeNetwork", RPCMode.AllBuffered,dmg,dir);
+
+
 		}
 	}
 	
 	[RPC]
-	void HitMeNetwork(float dmg){
+	void HitMeNetwork(float dmg,Vector3 hitDir){
 		
 		health -= dmg;
-		UpdateHealthBar();
+		Quaternion rotation = Quaternion.LookRotation(hitDir);
+		Network.Instantiate(hitParticle,transform.position,rotation,0);
 		if(health<=0){
 			Die();
+		}
+		if(healthBar!=null){
+			UpdateHealthBar();
 		}
 		
 	}
@@ -47,7 +57,8 @@ public class BossDefence : MonoBehaviour {
 	}
 
 	void Die(){
-		print("dead");
+		Network.Destroy(gameObject);
+
 	}
 
 	[RPC]
