@@ -27,13 +27,7 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void OnGUI () {
 		
-		
-		for(int i=0; i<players.Count;i++){
-			if(players[i]!=null){
-				GUI.Label(new Rect (50,100+50*i,200,50), "health = "+(int)players[i].GetComponent<PlayerDefense>().health);
-			}
-			
-		}
+
 		if(showMenu){
 			
 			GUI.Box(new Rect(Screen.width/2-menuRect.width/2,Screen.height/2-menuRect.height/2,menuRect.width,menuRect.height), "Main Menu");
