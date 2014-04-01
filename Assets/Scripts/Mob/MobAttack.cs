@@ -26,7 +26,9 @@ public class MobAttack : MonoBehaviour {
 				}
 			}
 			else{
-				MobMovement.move = true;
+				if(canAttack){
+					MobMovement.move = true;
+				}
 			}
 			
 		}
