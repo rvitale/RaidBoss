@@ -4,7 +4,7 @@ using System.Collections;
 public class NetworkManager : MonoBehaviour {
 
 
-	private const string typeName = "RaidBoss";
+	private const string typeName = "RaidArena";
 	private const int serverPort = 25000;
 	private string gameName = System.Environment.MachineName;
 	private HostData[] hostList;
@@ -19,8 +19,6 @@ public class NetworkManager : MonoBehaviour {
 	[HideInInspector]
 	public int playerNumber;
 	public GameController GC_GameController;
-	public GameObject boss;
-
 
 	/* * 
 	 * These functions convert coordinates in a 0-1000 range to
@@ -179,7 +177,6 @@ public class NetworkManager : MonoBehaviour {
 		GC_GameController.playerNumber ++;
 		SpawnPlayer();
 		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length,0);
-		boss.SetActive(true);
 	}
 
 	void OnConnectedToServer()
