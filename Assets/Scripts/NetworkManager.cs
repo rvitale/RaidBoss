@@ -9,23 +9,17 @@ public class NetworkManager : MonoBehaviour {
 	private string gameName = System.Environment.MachineName;
 	private HostData[] hostList;
 	private HostData selectedGame;
-	GameObject playerPrefab;
+
 	public Transform playerSpawn;
 	public GameObject cameraPrefab;
-	public GameObject[] Classes;
-	private bool startingServer = false;
+	public GameObject playerPrefab;
+
 	private bool selectingIP = false;
 	private string ipText = "";
 	[HideInInspector]
 	public int playerNumber;
 	public GameController GC_GameController;
 	public GameObject boss;
-
-	private void StartServer()
-	{
-		startingServer = true;
-
-	}
 
 
 	/* * 
@@ -72,37 +66,6 @@ public class NetworkManager : MonoBehaviour {
 
 		float hostListBoxH = -1;
 
-		if(startingServer){
-
-			float classesX = mainButtonX + mainButtonW + mainButtonSpacing;
-			float classesY = mainButtonY;
-			float classesW = mainButtonW;
-			float classesH = mainButtonH;
-
-			if (hostList == null) {
-				if(GUI.Button(translateRect(new Rect(classesX, classesY , classesW, classesH)), "warrior")) {
-					playerPrefab = Classes[0];
-					Network.InitializeServer(4, serverPort, !Network.HavePublicAddress());
-					MasterServer.RegisterHost(typeName, gameName);
-					startingServer = false;
-				}
-
-				if(GUI.Button(translateRect(new Rect(classesX, classesY + mainButtonSpacing + classesH , classesW, classesH)), "rogue")) {
-					playerPrefab = Classes[1];
-					Network.InitializeServer(4, serverPort, !Network.HavePublicAddress());
-					MasterServer.RegisterHost(typeName, gameName);
-					startingServer = false;
-				}
-				if(GUI.Button(translateRect(new Rect(classesX, classesY + (mainButtonSpacing * 2) + (classesH * 2) , classesW, classesH)), "priest")) {
-					playerPrefab = Classes[2];
-					Network.InitializeServer(4, serverPort, !Network.HavePublicAddress());
-					MasterServer.RegisterHost(typeName, gameName);
-					startingServer = false;
-				}
-			}
-
-		}
-
 		if (!Network.isClient && !Network.isServer)
 		{
 
@@ -110,7 +73,9 @@ public class NetworkManager : MonoBehaviour {
 				hostList = null;
 				selectedGame = null;
 				selectingIP = false;
-				StartServer();
+
+				Network.InitializeServer(4, serverPort, !Network.HavePublicAddress());
+				MasterServer.RegisterHost(typeName, gameName);
 			}
 			
 			if (GUI.Button(translateRect(new Rect(mainButtonX, mainButtonY + mainButtonH + mainButtonSpacing, mainButtonW, mainButtonH)), "Refresh Hosts")) {
@@ -120,7 +85,6 @@ public class NetworkManager : MonoBehaviour {
 			if (GUI.Button(translateRect(new Rect(mainButtonX, mainButtonY + mainButtonH*2 + mainButtonSpacing*2, mainButtonW, mainButtonH)), "Connect by IP")) {
 				hostList = null;
 				selectedGame = null;
-				startingServer = false;
 				selectingIP = true;
 			}
 
@@ -140,7 +104,7 @@ public class NetworkManager : MonoBehaviour {
 				}
 			}
 			
-			if (!startingServer && hostList != null && hostList.Length > 0)
+			if(hostList != null && hostList.Length > 0)
 			{
 
 				hostListBoxH = hostListBoxHeaderHeight + (hostList.Length * hostEntryHeight) + ((hostList.Length + 3) * hostEntrySpacing);
@@ -153,12 +117,13 @@ public class NetworkManager : MonoBehaviour {
 					                                      hostListBoxW - (2 * hostEntrySpacing), 
 					                                      hostEntryHeight)), 
 					               hostList[i].gameName)) {
-						selectedGame = hostList[i];
+
+						JoinServer(hostList[i]);
 					}
 				}
 			}
 
-			if (selectedGame != null) {
+			/*if (selectedGame != null) {
 
 				float classesX = hostListBoxX + hostListBoxW + mainButtonSpacing;
 				float classesY = mainButtonY;
@@ -180,11 +145,9 @@ public class NetworkManager : MonoBehaviour {
 						JoinServer(selectedGame);
 					}
 				}
-			}
+			}*/
 		}
 	}
-	
-
 	
 	private void RefreshHostList()
 	{
@@ -194,7 +157,6 @@ public class NetworkManager : MonoBehaviour {
 	void OnMasterServerEvent(MasterServerEvent msEvent)
 	{
 		if (msEvent == MasterServerEvent.HostListReceived) {
-			startingServer = false;
 			selectedGame = null;
 			selectingIP = false;
 			hostList = MasterServer.PollHostList();
