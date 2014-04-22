@@ -46,13 +46,11 @@ public class PlayerDefense : MonoBehaviour {
 	}
 
 	public void HitMe(float dmg,Vector3 hitDir, string tag){
-
-		if(!Shielded(hitDir)){
+		if(!Shielded(hitDir)) {
 			PMC_PlayerManagerClass.PlaySound("hit");
 				Quaternion rotation = Quaternion.LookRotation(hitDir);
 				Network.Instantiate(hitParticle,transform.position,rotation,0);
-		}
-		else{
+		} else {
 			dmg*=shieldDmgReduction;
 		}
 
@@ -60,44 +58,32 @@ public class PlayerDefense : MonoBehaviour {
 	}
 
 	public void LoseHealth(float dmg, string tag){
-		if(tag == "playerAttack"){
-			if(isDead){
-				HealMe(10);
-				isDead = false;
-				transform.eulerAngles = new Vector3(0,0,0);
-			}
-		}
-		else{
-			if(!isDead){
-				health -= dmg;
-				if(health<=0)
-					Die();
+		if(!isDead) {
+			health -= dmg;
+			if(health <= 0) {
+				Die();
 			}
 		}
 	}
 
 	bool Shielded(Vector3 hitDir){
-		if(!PMC_PlayerManagerClass.bIsShielding)
+		if (!PMC_PlayerManagerClass.bIsShielding) {
 			return false;
-		else{
+		} else {
 			float angle = Vector3.Angle(transform.forward.normalized,hitDir);
 			if(angle < shieldWidth){
 				PMC_PlayerManagerClass.PlaySound("block");
 				return true;
-
-			}
-			else{
+			} else {
 				print ("Hit");
 				return false;
-			
 			}
 		}
-
 	}
 
 	public void HealMe(float dmg) {
 		health += dmg;
-		if(health>MaxHealth) {
+		if(health > MaxHealth) {
 			health = MaxHealth;
 		}
 	}
