@@ -301,7 +301,7 @@ MonoBehaviour:
   cameraPrefab: {fileID: 100000, guid: 647a098e9e1d6ba4fbee6c1d612f5960, type: 2}
   playerPrefab: {fileID: 100004, guid: 4974ea2018ccf8c4a891ea30dfc3bbfa, type: 2}
   playerNumber: 0
-  GC_GameController: {fileID: 0}
+  GC_GameController: {fileID: 1277891798}
 --- !u!4 &297114924
 Transform:
   m_ObjectHideFlags: 0
@@ -452,7 +452,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   progressBarEmpty: {fileID: 2800000, guid: 107ad0588fce84e4db68442d5bd0a7ce, type: 3}
   progressBarFull: {fileID: 2800000, guid: 0f57624457c8279439410de1ef1dcbc8, type: 3}
-  gameController: {fileID: 0}
+  gameController: {fileID: 1277891798}
 --- !u!4 &501395937
 Transform:
   m_ObjectHideFlags: 0
@@ -729,6 +729,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1381679779}
   - 148: {fileID: 1381679780}
+  - 114: {fileID: 1381679778}
   m_Layer: 0
   m_Name: SpawnController
   m_TagString: Untagged
@@ -736,6 +737,17 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1381679778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1381679777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 107b37745f8e60a4cb131ff2eeb23a0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1381679779
 Transform:
   m_ObjectHideFlags: 0

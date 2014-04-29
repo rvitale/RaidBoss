@@ -10,6 +10,7 @@ public class PlayerDefense : MonoBehaviour {
 
 	public float health;
 	PlayerManager PMC_PlayerManagerClass;
+	SpawnController spawnController;
 	public int shieldWidth;
 	public Transform spawn;
 	bool showDeathScreen = false;
@@ -23,6 +24,7 @@ public class PlayerDefense : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
+		spawnController = GameObject.Find("SpawnController").GetComponent<SpawnController>();
 		health = MaxHealth;
 	}
 
@@ -61,7 +63,7 @@ public class PlayerDefense : MonoBehaviour {
 		if(!isDead) {
 			health -= dmg;
 			if(health <= 0) {
-				Die();
+				StartCoroutine(Die ());
 			}
 		}
 	}
@@ -81,17 +83,22 @@ public class PlayerDefense : MonoBehaviour {
 		}
 	}
 
-	public void HealMe(float dmg) {
-		health += dmg;
+	public void HealMe(float heal) {
+		health += heal;
 		if(health > MaxHealth) {
 			health = MaxHealth;
 		}
 	}
 
-	void Die(){
+	IEnumerator Die(){
 		transform.eulerAngles = new Vector3(90,0,0);
 		health = 0;
 		isDead = true;
+		yield return new WaitForSeconds(2);
+		HealMe (MaxHealth);
+		isDead = false;
+		transform.eulerAngles = new Vector3(0,0,0);
+		spawnController.Spawn(gameObject);
 	}
 
 	IEnumerator ShowDeathScreen(){
