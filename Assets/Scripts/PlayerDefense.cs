@@ -47,16 +47,24 @@ public class PlayerDefense : MonoBehaviour {
 		}
 	}
 
-	public void HitMe(float dmg,Vector3 hitDir, string tag){
-		if(!Shielded(hitDir)) {
-			PMC_PlayerManagerClass.PlaySound("hit");
-				Quaternion rotation = Quaternion.LookRotation(hitDir);
-				Network.Instantiate(hitParticle,transform.position,rotation,0);
+	public void ApplyDamage(PlayerDefense damagingPlayer, Vector3 direction, float damage){
+		networkView.RPC("DoingDamage", networkView.owner, damage, direction, damagingPlayer.networkView.owner);
+		//damagedPlayer.GetComponent<PlayerDefense> ().HitMe (damage, direction, damagingPlayer.tag);
+	}
+
+	[RPC]
+	IEnumerator DoingDamage(float dmg, Vector3 hitDir, NetworkPlayer damagingPlayer) {
+		yield return new WaitForSeconds(0.1f);
+		Debug.Log ("Getting damaged");
+		if (!Shielded (hitDir)) {
+				PMC_PlayerManagerClass.PlaySound ("hit");
+				Quaternion rotation = Quaternion.LookRotation (hitDir);
+				Network.Instantiate (hitParticle, transform.position, rotation, 0);
 		} else {
-			dmg*=shieldDmgReduction;
+				dmg *= shieldDmgReduction;
 		}
 
-		LoseHealth(dmg, tag);
+		LoseHealth (dmg, tag);
 	}
 
 	public void LoseHealth(float dmg, string tag){
@@ -65,6 +73,7 @@ public class PlayerDefense : MonoBehaviour {
 			if(health <= 0) {
 				StartCoroutine(Die ());
 			}
+			Debug.Log(health);
 		}
 	}
 
