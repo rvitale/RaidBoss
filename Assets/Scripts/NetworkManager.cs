@@ -184,37 +184,37 @@ public class NetworkManager : MonoBehaviour {
 		GC_GameController.playerNumber ++;
 		SpawnPlayer();
 	}
+
 	void OnPlayerConnected(){
 //		print ( Network.connections.Length);
-		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length,2);
+		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length, 2);
 	}
+
 	void OnPlayerDisconnected(NetworkPlayer player){
-		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length,2);
+		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length, 2);
 		Network.RemoveRPCs(player);
 		Network.DestroyPlayerObjects(player);
 	}
-	void OnDisconnectedFromServer(){
 
+	void OnDisconnectedFromServer(){
 		audio.Stop();
 	}
 
-	private void SpawnPlayer()
-	{
+	private void SpawnPlayer() {
 		GameObject player = (GameObject)Network.Instantiate(playerPrefab, playerSpawn.position, Quaternion.identity, 0);
 		player.name = player.networkView.viewID.ToString();
-		GameObject camera = (GameObject)Instantiate(cameraPrefab,player.transform.position,player.transform.rotation);
+		GameObject camera = (GameObject)Instantiate(cameraPrefab, player.transform.position, player.transform.rotation);
 		camera.GetComponent<PlayerCamera>().player = player.transform;
 		//Camera.main = camera;
 		audio.Play();
 
 		//GC_GameController.playerNumber ++;
-
-	
 	}
+
 	[RPC]
 	IEnumerator UpdatePlayerNumber(int players, int wait){
 		yield return new WaitForSeconds(wait);
-			playerNumber =players;
+			playerNumber = players;
 			GC_GameController.GetNewPlayer();
 	}
 	

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameGUI : MonoBehaviour {
 	
@@ -13,19 +14,21 @@ public class GameGUI : MonoBehaviour {
 	public Texture2D progressBarFull;
 
 	public GameController gameController;
-
-	private float mainPlayerHealth = 0;
-	private float[] otherPlayersHealth;
+	
+	private Dictionary<string, float> playersHealth = new Dictionary<string, float>();
 
 	private bool initialized = false;
 
 	void OnGUI()
 	{	
 		if (initialized) {
-			drawHealthBar (pos, mainSize, mainPlayerHealth);
+			drawHealthBar (pos, mainSize, playersHealth[gameController.localPlayer]);
 
-			for (int i=0; i<otherPlayersHealth.Length; i++) {
-				drawHealthBar (new Vector2 (pos.x, pos.y + barsSpacing * (i+1)), otherSize, otherPlayersHealth [i]);
+			int i = 0;
+			foreach (string playerName in playersHealth.Keys) {
+				if (!playerName.Equals(gameController.localPlayer)) {
+					drawHealthBar (new Vector2 (pos.x, pos.y + barsSpacing * (i++ + 1)), otherSize, playersHealth[playerName]);
+				}
 			}
 		}
 	}
@@ -46,10 +49,8 @@ public class GameGUI : MonoBehaviour {
 	void Update()
 	{
 		if (gameController.players.Count > 0 ) {
-			mainPlayerHealth = gameController.players[0].GetComponent<PlayerDefense> ().health;
-			otherPlayersHealth = new float[gameController.players.Count-1];
-			for (int i=1; i<gameController.players.Count; i++) {
-				otherPlayersHealth[i-1] = gameController.players[i].GetComponent<PlayerDefense>().health;
+			foreach (string playerName in gameController.players.Keys) {
+				playersHealth[playerName] = gameController.players[playerName].GetComponent<PlayerDefense>().health;
 			}
 
 			if (!initialized) {

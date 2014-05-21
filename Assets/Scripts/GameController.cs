@@ -8,20 +8,19 @@ public class GameController : MonoBehaviour {
 	public NetworkManager NM_NetworkManager;
 	
 	public List<PlayerDefense> PD_PlayerDefense = new List<PlayerDefense>();
-	public List<GameObject> players = new List<GameObject>();
+	public Dictionary<string, GameObject> players = new Dictionary<string, GameObject>();
+	public string localPlayer = "";
 	bool showMenu = false;
 	Rect menuRect = new Rect(0,0,100,200);
 	// Use this for initialization
 	
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.Escape)){
+		if(Input.GetKeyDown(KeyCode.Escape)) {
 			if(!showMenu){
 				showMenu = true;
-			}
-			else{
+			} else {
 				showMenu = false;
 			}
-			
 		}
 	}
 	// Update is called once per frame
@@ -29,18 +28,15 @@ public class GameController : MonoBehaviour {
 		
 
 		if(showMenu){
-			
-			GUI.Box(new Rect(Screen.width/2-menuRect.width/2,Screen.height/2-menuRect.height/2,menuRect.width,menuRect.height), "Main Menu");
+
+			//TODO: Implement in-game menu
+
+			/*GUI.Box(new Rect(Screen.width/2-menuRect.width/2,Screen.height/2-menuRect.height/2,menuRect.width,menuRect.height), "Main Menu");
 			
 			// Make the first button. If it is pressed, Application.Loadlevel (1) will be executed
 			if(GUI.Button(new Rect(Screen.width/2-menuRect.width/2,Screen.height/2-menuRect.height/2+50,menuRect.width,50), "Change Char")) {
 				showMenu = false;
 				DisconnectMe();
-				
-				
-				
-				
-				
 			}
 			
 			// Make the second button.
@@ -48,49 +44,30 @@ public class GameController : MonoBehaviour {
 				showMenu = false;
 				DisconnectMe();
 				Application.Quit ();
-			}
+			}*/
 		}
 		
 		
 	}
-	void DisconnectMe(){
-		
-		Network.Destroy(players[0]);
-		for(int i=0;i<players.Count;i++){
-			Destroy(players[i]);
+
+	void DisconnectMe() {
+		Network.Destroy(players[localPlayer]);
+		foreach(GameObject player in players.Values){
+			Destroy(player);
 		}
 		Network.Disconnect();
 	}
 	
-	public void GetNewPlayer(){
+	public void GetNewPlayer() {
 
-		players.Clear();
 		GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
 		
-		
-		if(players.Count==0){
-			players.Add(gos[0]);
-		}
-		foreach(GameObject player in gos){
-			
-			bool add = true;
-			for(int i=0; i<players.Count;i++){
-				if(player == players[i]){
-					add = false;
-				}
+		foreach(GameObject player in gos) {
+			if (player.networkView.isMine) {
+				this.localPlayer = player.name;
 			}
-			if(add == true){
-				if(player.networkView.isMine){
-					players.Insert(0,player);
-				}
-				else{
-					players.Add(player);
-				}
-			}
-			
+
+			players[player.name] = player;
 		}
 	}
-	
-	
-	
 }
