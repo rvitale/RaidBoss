@@ -19,6 +19,7 @@ public class NetworkManager : MonoBehaviour {
 	[HideInInspector]
 	public int playerNumber;
 	public GameController GC_GameController;
+	public SpawnController sc;
 
 	/* * 
 	 * These functions convert coordinates in a 0-1000 range to
@@ -201,7 +202,7 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	private void SpawnPlayer() {
-		GameObject player = (GameObject)Network.Instantiate(playerPrefab, playerSpawn.position, Quaternion.identity, 0);
+		GameObject player = (GameObject)Network.Instantiate(playerPrefab, sc.GetNextSpawnPoint(), Quaternion.identity, 0);
 		player.name = player.networkView.viewID.ToString();
 		GameObject camera = (GameObject)Instantiate(cameraPrefab, player.transform.position, player.transform.rotation);
 		camera.GetComponent<PlayerCamera>().player = player.transform;
