@@ -302,6 +302,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 100004, guid: 4974ea2018ccf8c4a891ea30dfc3bbfa, type: 2}
   playerNumber: 0
   GC_GameController: {fileID: 1277891798}
+  sc: {fileID: 1381679778}
 --- !u!4 &297114924
 Transform:
   m_ObjectHideFlags: 0
@@ -423,7 +424,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5631a19fa45842049b1d7c5cc27c60ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scores: 
 --- !u!4 &450199132
 Transform:
   m_ObjectHideFlags: 0
@@ -760,7 +760,7 @@ MonoBehaviour:
   playerNumber: 0
   NM_NetworkManager: {fileID: 297114923}
   PD_PlayerDefense: []
-  players: []
+  localPlayer: 
 --- !u!4 &1277891799
 Transform:
   m_ObjectHideFlags: 0
@@ -797,7 +797,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1381679777}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 107b37745f8e60a4cb131ff2eeb23a0d, type: 3}
+  m_Script: {fileID: 11500000, guid: bbd9acfe0acbf7148bf85f95b548cdc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1381679779
