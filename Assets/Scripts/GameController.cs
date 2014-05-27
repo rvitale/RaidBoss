@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.Escape)) {
+ 		if(Input.GetKeyDown(KeyCode.Escape)) {
 			if(!showMenu){
 				showMenu = true;
 			} else {
@@ -63,11 +63,15 @@ public class GameController : MonoBehaviour {
 		GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
 		
 		foreach(GameObject player in gos) {
+			player.name = player.networkView.viewID.ToString();
+
 			if (player.networkView.isMine) {
 				this.localPlayer = player.name;
 			}
 
 			players[player.name] = player;
 		}
+
+		GameObject.FindObjectOfType<ScoreManager> ().FlushPlayers (players.Keys);
 	}
 }

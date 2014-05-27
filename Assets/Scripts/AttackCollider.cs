@@ -19,7 +19,7 @@ public class AttackCollider : MonoBehaviour {
 			//other.GetComponent<PlayerDefense>().HitMe(dmg,dir,gameObject.tag);
 			//networkView.RPC("UpdatePlayerNumber", RPCMode.All, other, dir, dmg, this);
 			PlayerDefense damagedPlayer = other.GetComponent<PlayerDefense>();
-			PlayerDefense damagingPlayer = transform.parent.gameObject.GetComponent<PlayerDefense>();
+			GameObject damagingPlayer = transform.parent.gameObject;
 			damagedPlayer.ApplyDamage(damagingPlayer, dir, dmg);
 		}
 	}

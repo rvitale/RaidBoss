@@ -11,6 +11,8 @@ public class PlayerDefense : MonoBehaviour {
 	public float health;
 	PlayerManager PMC_PlayerManagerClass;
 	SpawnController spawnController;
+	ScoreManager scoreManager;
+
 	public int shieldWidth;
 	public Transform spawn;
 	bool showDeathScreen = false;
@@ -25,6 +27,7 @@ public class PlayerDefense : MonoBehaviour {
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
 		spawnController = GameObject.Find("SpawnController").GetComponent<SpawnController>();
+		scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
 		health = MaxHealth;
 	}
 
@@ -47,13 +50,13 @@ public class PlayerDefense : MonoBehaviour {
 		}
 	}
 
-	public void ApplyDamage(PlayerDefense damagingPlayer, Vector3 direction, float damage){
-		networkView.RPC("DoingDamage", networkView.owner, damage, direction, damagingPlayer.networkView.owner);
+	public void ApplyDamage(GameObject damagingPlayer, Vector3 direction, float damage){
+		networkView.RPC("DoingDamage", networkView.owner, damage, direction, damagingPlayer.name);
 		//damagedPlayer.GetComponent<PlayerDefense> ().HitMe (damage, direction, damagingPlayer.tag);
 	}
 
 	[RPC]
-	IEnumerator DoingDamage(float dmg, Vector3 hitDir, NetworkPlayer damagingPlayer) {
+	IEnumerator DoingDamage(float dmg, Vector3 hitDir, string damagingPlayer) {
 		yield return new WaitForSeconds(0.1f);
 		Debug.Log ("Getting damaged");
 		if (!Shielded (hitDir)) {
@@ -64,14 +67,14 @@ public class PlayerDefense : MonoBehaviour {
 				dmg *= shieldDmgReduction;
 		}
 
-		LoseHealth (dmg, tag);
+		LoseHealth (dmg, tag, damagingPlayer);
 	}
 
-	public void LoseHealth(float dmg, string tag){
+	public void LoseHealth(float dmg, string tag, string killer){
 		if(!isDead) {
 			health -= dmg;
 			if(health <= 0) {
-				StartCoroutine(Die ());
+				StartCoroutine(Die (killer));
 			}
 			Debug.Log(health);
 		}
@@ -99,10 +102,11 @@ public class PlayerDefense : MonoBehaviour {
 		}
 	}
 
-	IEnumerator Die(){
+	IEnumerator Die(string killer){
 		transform.eulerAngles = new Vector3(90,0,0);
 		health = 0;
 		isDead = true;
+		scoreManager.IncrementPlayerScore (killer);
 		yield return new WaitForSeconds(2);
 		HealMe (MaxHealth);
 		isDead = false;
