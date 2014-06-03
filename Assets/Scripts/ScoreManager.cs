@@ -35,8 +35,7 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	[RPC]
-	IEnumerator BroadcastChangedScore(string playerName, int newScore){
-		yield return new WaitForSeconds(1);
+	void BroadcastChangedScore(string playerName, int newScore){
 		scores [playerName] = newScore;
 	}
 }

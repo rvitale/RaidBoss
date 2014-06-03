@@ -56,8 +56,7 @@ public class PlayerDefense : MonoBehaviour {
 	}
 
 	[RPC]
-	IEnumerator DoingDamage(float dmg, Vector3 hitDir, string damagingPlayer) {
-		yield return new WaitForSeconds(0.1f);
+	void DoingDamage(float dmg, Vector3 hitDir, string damagingPlayer) {
 		Debug.Log ("Getting damaged");
 		if (!Shielded (hitDir)) {
 				PMC_PlayerManagerClass.PlaySound ("hit");
@@ -74,7 +73,8 @@ public class PlayerDefense : MonoBehaviour {
 		if(!isDead) {
 			health -= dmg;
 			if(health <= 0) {
-				StartCoroutine(Die (killer));
+				StartCoroutine(Die ());
+				scoreManager.IncrementPlayerScore (killer);
 			}
 			Debug.Log(health);
 		}
@@ -102,11 +102,10 @@ public class PlayerDefense : MonoBehaviour {
 		}
 	}
 
-	IEnumerator Die(string killer){
+	IEnumerator Die(){
 		transform.eulerAngles = new Vector3(90,0,0);
 		health = 0;
 		isDead = true;
-		scoreManager.IncrementPlayerScore (killer);
 		yield return new WaitForSeconds(2);
 		HealMe (MaxHealth);
 		isDead = false;
