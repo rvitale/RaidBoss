@@ -5,32 +5,48 @@ using System.Collections.Generic;
 public class GameGUI : MonoBehaviour {
 	
 	float barDisplay = 0;
-	Vector2 pos = new Vector2 (20,40);
-	Vector2 mainSize = new Vector2 (60,20);
-	Vector2 otherSize = new Vector2 (40, 20);
+	Vector2 healthBarsPos = new Vector2 (20,40);
+	Vector2 localPlayerBarSize = new Vector2 (60,20);
+	Vector2 otherPlayersBarSize = new Vector2 (40, 20);
 	float barsSpacing = 40;
+
+	Vector2 scoreTextSize = new Vector2 (60,20);
+	Vector2 scoreTextPos;
 
 	public Texture2D progressBarEmpty;
 	public Texture2D progressBarFull;
 
 	public GameController gameController;
+	public ScoreManager scoreManager;
 	
 	private Dictionary<string, float> playersHealth = new Dictionary<string, float>();
 
 	private bool initialized = false;
 
+	void Start() {
+		scoreTextPos = new Vector2 (Screen.width - barsSpacing - scoreTextSize.x, 20);
+	}
+
 	void OnGUI()
 	{	
 		if (initialized) {
-			drawHealthBar (pos, mainSize, playersHealth[gameController.localPlayer]);
+			drawHealthBar (localPlayerBarSize, localPlayerBarSize, playersHealth[gameController.localPlayer]);
+
+			drawPlayerScore (scoreTextPos, scoreTextSize, scoreManager.getScore(gameController.localPlayer));
 
 			int i = 0;
 			foreach (string playerName in playersHealth.Keys) {
 				if (!playerName.Equals(gameController.localPlayer)) {
-					drawHealthBar (new Vector2 (pos.x, pos.y + barsSpacing * (i++ + 1)), otherSize, playersHealth[playerName]);
+					drawHealthBar (new Vector2 (localPlayerBarSize.x, localPlayerBarSize.y + barsSpacing * (i++ + 1)),
+					               				otherPlayersBarSize, playersHealth[playerName]);
 				}
 			}
 		}
+	}
+
+	private void drawPlayerScore(Vector2 position, Vector2 size, int score) {
+		GUI.Label (new Rect (position.x, position.y, size.x, size.y), 
+		              string.Format ("Score: {0,2}", score));
 	}
 
 	private void drawHealthBar(Vector2 position, Vector2 size, float percentage) {

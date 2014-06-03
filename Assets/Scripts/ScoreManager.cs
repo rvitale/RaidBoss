@@ -18,6 +18,14 @@ public class ScoreManager : MonoBehaviour {
 		networkView.RPC("BroadcastChangedScore", RPCMode.All, playerName, scores[playerName]);
 	}
 
+	public int getScore(string playerName) {
+		if (!scores.ContainsKey (playerName)) {
+			scores[playerName] = 0;
+		}
+
+		return scores [playerName];
+	}
+
 	public void FlushPlayers(IEnumerable<string> players) {
 		foreach(string player in players) {
 			if(!scores.ContainsKey(player)) {
