@@ -28,7 +28,7 @@ public class PlayerAbilities : MonoBehaviour {
 					networkView.RPC("CastAttack", RPCMode.All);
 				}
 
-				else if(Input.GetButtonDown("Fire2")){
+				else if(Input.GetButtonDown("Fire2") && playerDefense.health > AbilityCost) {
 					playerDefense.LoseHealth(AbilityCost,"", gameObject.name);
 					networkView.RPC("Shield", RPCMode.All,true);
 					playerDefense.currRegen = 0;
