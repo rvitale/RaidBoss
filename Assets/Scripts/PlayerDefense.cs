@@ -57,13 +57,8 @@ public class PlayerDefense : MonoBehaviour {
 	}
 
 	[RPC]
-<<<<<<< Updated upstream
 	void DoingDamage(float dmg, Vector3 hitDir, string damagingPlayer) {
 		Debug.Log ("Getting damaged");
-=======
-	IEnumerator DoingDamage(float dmg, Vector3 hitDir, string damagingPlayer) {
-		yield return new WaitForSeconds(0.1f);
->>>>>>> Stashed changes
 		if (!Shielded (hitDir)) {
 				Debug.Log ("Getting damaged");
 				PMC_PlayerManagerClass.PlaySound ("hit");
