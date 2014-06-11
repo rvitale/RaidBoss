@@ -2,7 +2,11 @@ fileFormatVersion: 2
 guid: 07a8b5472c3e2b24b91a8ffaae115e08
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - spawn: {instanceID: 0}
+  - redTxt: {instanceID: 0}
+  - hitParticle: {instanceID: 0}
+  - shieldParticle: {fileID: 100000, guid: b93f9a3a85b009541b92bba88ffe2fdf, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

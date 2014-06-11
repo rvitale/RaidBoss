@@ -23,6 +23,7 @@ public class PlayerDefense : MonoBehaviour {
 	public bool isDead = false;
 	public Texture2D redTxt;
 	public GameObject hitParticle;
+	public GameObject shieldParticle;
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
@@ -56,14 +57,22 @@ public class PlayerDefense : MonoBehaviour {
 	}
 
 	[RPC]
+<<<<<<< Updated upstream
 	void DoingDamage(float dmg, Vector3 hitDir, string damagingPlayer) {
 		Debug.Log ("Getting damaged");
+=======
+	IEnumerator DoingDamage(float dmg, Vector3 hitDir, string damagingPlayer) {
+		yield return new WaitForSeconds(0.1f);
+>>>>>>> Stashed changes
 		if (!Shielded (hitDir)) {
+				Debug.Log ("Getting damaged");
 				PMC_PlayerManagerClass.PlaySound ("hit");
 				Quaternion rotation = Quaternion.LookRotation (hitDir);
 				Network.Instantiate (hitParticle, transform.position, rotation, 0);
 		} else {
 				dmg *= shieldDmgReduction;
+				Quaternion rotation = Quaternion.LookRotation (hitDir);
+				Network.Instantiate (shieldParticle, transform.position, rotation, 0);
 		}
 
 		LoseHealth (dmg, tag, damagingPlayer);
