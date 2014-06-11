@@ -8,8 +8,8 @@ public class GameController : MonoBehaviour {
 	public NetworkManager NM_NetworkManager;
 	
 	public List<PlayerDefense> PD_PlayerDefense = new List<PlayerDefense>();
-	public Dictionary<string, GameObject> players = new Dictionary<string, GameObject>();
-	public string localPlayer = "";
+	public Dictionary<NetworkViewID, GameObject> players = new Dictionary<NetworkViewID, GameObject>();
+	public NetworkViewID localPlayer;
 	bool showMenu = false;
 	Rect menuRect = new Rect(0,0,100,200);
 	// Use this for initialization
@@ -63,14 +63,14 @@ public class GameController : MonoBehaviour {
 		GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
 		
 		foreach(GameObject player in gos) {
-			player.name = player.networkView.viewID.ToString();
-
 			if (player.networkView.isMine) {
-				this.localPlayer = player.name;
+				this.localPlayer = player.networkView.viewID;
 			}
 
-			players[player.name] = player;
+			players[player.networkView.viewID] = player;
 		}
+
+
 
 		GameObject.FindObjectOfType<ScoreManager> ().FlushPlayers (players.Keys);
 	}

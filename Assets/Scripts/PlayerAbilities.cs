@@ -29,7 +29,7 @@ public class PlayerAbilities : MonoBehaviour {
 				}
 
 				else if(Input.GetButtonDown("Fire2") && playerDefense.health > AbilityCost){
-					playerDefense.LoseHealth(AbilityCost,"", gameObject.name);
+					playerDefense.LoseHealth(AbilityCost,"", transform.parent.gameObject.networkView.viewID);
 					networkView.RPC("Shield", RPCMode.All,true);
 					playerDefense.currRegen = 0;
 				}

@@ -19,7 +19,7 @@ public class GameGUI : MonoBehaviour {
 	public GameController gameController;
 	public ScoreManager scoreManager;
 	
-	private Dictionary<string, float> playersHealth = new Dictionary<string, float>();
+	private Dictionary<NetworkViewID, float> playersHealth = new Dictionary<NetworkViewID, float>();
 
 	private bool initialized = false;
 
@@ -35,10 +35,10 @@ public class GameGUI : MonoBehaviour {
 			drawPlayerScore (scoreTextPos, scoreTextSize, scoreManager.getScore(gameController.localPlayer));
 
 			int i = 0;
-			foreach (string playerName in playersHealth.Keys) {
-				if (!playerName.Equals(gameController.localPlayer)) {
+			foreach (NetworkViewID player in playersHealth.Keys) {
+				if (!player.Equals(gameController.localPlayer)) {
 					drawHealthBar (new Vector2 (localPlayerBarSize.x, localPlayerBarSize.y + barsSpacing * (i++ + 1)),
-					               				otherPlayersBarSize, playersHealth[playerName]);
+					               otherPlayersBarSize, playersHealth[player]);
 				}
 			}
 		}
@@ -65,8 +65,8 @@ public class GameGUI : MonoBehaviour {
 	void Update()
 	{
 		if (gameController.players.Count > 0 ) {
-			foreach (string playerName in gameController.players.Keys) {
-				playersHealth[playerName] = gameController.players[playerName].GetComponent<PlayerDefense>().health;
+			foreach (NetworkViewID player in gameController.players.Keys) {
+				playersHealth[player] = gameController.players[player].GetComponent<PlayerDefense>().health;
 			}
 
 			if (!initialized) {

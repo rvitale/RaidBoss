@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class ScoreManager : MonoBehaviour {
 
-	public Dictionary<string, int> scores = new Dictionary<string, int>();
+	public Dictionary<NetworkViewID, int> scores = new Dictionary<NetworkViewID, int>();
 
 	private bool initialized = false;
 
-	public void IncrementPlayerScore(string playerName) {
+	public void IncrementPlayerScore(NetworkViewID playerName) {
 		if (!scores.ContainsKey (playerName)) {
 			scores [playerName] = 1;
 		} else {
@@ -18,16 +18,16 @@ public class ScoreManager : MonoBehaviour {
 		networkView.RPC("BroadcastChangedScore", RPCMode.All, playerName, scores[playerName]);
 	}
 
-	public int getScore(string playerName) {
-		if (!scores.ContainsKey (playerName)) {
-			scores[playerName] = 0;
+	public int getScore(NetworkViewID player) {
+		if (!scores.ContainsKey (player)) {
+			scores[player] = 0;
 		}
 
-		return scores [playerName];
+		return scores [player];
 	}
 
-	public void FlushPlayers(IEnumerable<string> players) {
-		foreach(string player in players) {
+	public void FlushPlayers(IEnumerable<NetworkViewID> players) {
+		foreach(NetworkViewID player in players) {
 			if(!scores.ContainsKey(player)) {
 				scores[player] = 0;
 			}
@@ -35,7 +35,7 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	[RPC]
-	void BroadcastChangedScore(string playerName, int newScore){
-		scores [playerName] = newScore;
+	void BroadcastChangedScore(NetworkViewID player, int newScore){
+		scores [player] = newScore;
 	}
 }

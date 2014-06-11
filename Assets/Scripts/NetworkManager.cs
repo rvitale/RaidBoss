@@ -15,7 +15,11 @@ public class NetworkManager : MonoBehaviour {
 	public GameObject playerPrefab;
 
 	private bool selectingIP = false;
+	private bool selectingName = false;
+
 	private string ipText = "";
+	private string playerName;
+
 	[HideInInspector]
 	public int playerNumber;
 	public GameController GC_GameController;
@@ -41,6 +45,10 @@ public class NetworkManager : MonoBehaviour {
 			translateY (rect.height));
 
 		return rect;
+	}
+
+	void Start() {
+		playerName = PlayerPrefs.GetString("playerName", System.Environment.MachineName);
 	}
 
 	// Use this for initialization
@@ -87,6 +95,13 @@ public class NetworkManager : MonoBehaviour {
 				selectingIP = true;
 			}
 
+			if (GUI.Button(translateRect(new Rect(mainButtonX, mainButtonY + mainButtonH*3 + mainButtonSpacing*3, mainButtonW, mainButtonH)), "Set Player Name")) {
+				hostList = null;
+				selectedGame = null;
+				selectingIP = false;
+				selectingName = true;
+			}
+
 			if (selectingIP) {
 				float ipFieldX = hostListBoxX;
 				float ipFieldY = hostListBoxY;
@@ -100,6 +115,22 @@ public class NetworkManager : MonoBehaviour {
 					selectedGame = new HostData();
 					selectedGame.ip = new string[] { ipText };
 					selectedGame.port = serverPort;
+				}
+			}
+
+			if (selectingName) {
+				float ipFieldX = hostListBoxX;
+				float ipFieldY = hostListBoxY;
+				float ipFieldW = hostListBoxW;
+				float ipFieldH = mainButtonH;
+				
+				float ipFieldSpacing = mainButtonSpacing;
+
+				playerName = GUI.TextField(translateRect(new Rect(ipFieldX, ipFieldY, ipFieldW, ipFieldH)), playerName);
+				if (GUI.Button(translateRect(new Rect(ipFieldX, ipFieldY + ipFieldH + ipFieldSpacing, ipFieldW, ipFieldH)), "Save")) {
+					PlayerPrefs.SetString("playerName", playerName);
+					PlayerPrefs.Save();
+					selectingName = false;
 				}
 			}
 			
@@ -177,7 +208,7 @@ public class NetworkManager : MonoBehaviour {
 	{
 		GC_GameController.playerNumber ++;
 		SpawnPlayer();
-		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length,0);
+		networkView.RPC("UpdatePlayerNumber", RPCMode.All, Network.connections.Length, 0);
 	}
 
 	void OnConnectedToServer()
@@ -188,11 +219,11 @@ public class NetworkManager : MonoBehaviour {
 
 	void OnPlayerConnected(){
 //		print ( Network.connections.Length);
-		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length, 2);
+		networkView.RPC("UpdatePlayerNumber", RPCMode.All, Network.connections.Length, 2);
 	}
 
 	void OnPlayerDisconnected(NetworkPlayer player){
-		networkView.RPC("UpdatePlayerNumber", RPCMode.All,Network.connections.Length, 2);
+		networkView.RPC("UpdatePlayerNumber", RPCMode.All, Network.connections.Length, 2);
 		Network.RemoveRPCs(player);
 		Network.DestroyPlayerObjects(player);
 	}
@@ -203,13 +234,21 @@ public class NetworkManager : MonoBehaviour {
 
 	private void SpawnPlayer() {
 		GameObject player = (GameObject)Network.Instantiate(playerPrefab, sc.GetNextSpawnPoint(), Quaternion.identity, 0);
-		player.name = player.networkView.viewID.ToString();
+
+		networkView.RPC ("assignName", RPCMode.All, player.networkView.viewID, playerName);
+
 		GameObject camera = (GameObject)Instantiate(cameraPrefab, player.transform.position, player.transform.rotation);
 		camera.GetComponent<PlayerCamera>().player = player.transform;
 		//Camera.main = camera;
 		audio.Play();
 
 		//GC_GameController.playerNumber ++;
+	}
+
+	[RPC]
+	void assignName(NetworkViewID objectNetworkId, string name) {
+		NetworkView view = NetworkView.Find (objectNetworkId);
+		view.observed.name = name;
 	}
 
 	[RPC]

@@ -51,12 +51,12 @@ public class PlayerDefense : MonoBehaviour {
 	}
 
 	public void ApplyDamage(GameObject damagingPlayer, Vector3 direction, float damage){
-		networkView.RPC("DoingDamage", networkView.owner, damage, direction, damagingPlayer.name);
+		networkView.RPC("DoingDamage", networkView.owner, damage, direction, damagingPlayer.networkView.viewID);
 		//damagedPlayer.GetComponent<PlayerDefense> ().HitMe (damage, direction, damagingPlayer.tag);
 	}
 
 	[RPC]
-	void DoingDamage(float dmg, Vector3 hitDir, string damagingPlayer) {
+	void DoingDamage(float dmg, Vector3 hitDir, NetworkViewID damagingPlayer) {
 		Debug.Log ("Getting damaged");
 		if (!Shielded (hitDir)) {
 				PMC_PlayerManagerClass.PlaySound ("hit");
@@ -69,7 +69,7 @@ public class PlayerDefense : MonoBehaviour {
 		LoseHealth (dmg, tag, damagingPlayer);
 	}
 
-	public void LoseHealth(float dmg, string tag, string killer){
+	public void LoseHealth(float dmg, string tag, NetworkViewID killer){
 		if(!isDead) {
 			health -= dmg;
 			if(health <= 0) {
