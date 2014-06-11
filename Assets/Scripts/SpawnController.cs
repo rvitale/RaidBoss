@@ -20,7 +20,9 @@ public class SpawnController : MonoBehaviour {
 	}
 
 	public void Spawn(GameObject player) {
+		player.renderer.enabled = false;
 		player.transform.position = GetNextSpawnPoint ();
+		player.renderer.enabled = true;
 	}
 
 	public Vector3 GetNextSpawnPoint() {

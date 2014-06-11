@@ -23,6 +23,7 @@ public class PlayerDefense : MonoBehaviour {
 	public bool isDead = false;
 	public Texture2D redTxt;
 	public GameObject hitParticle;
+	public GameObject shieldParticle;
 	// Use this for initialization
 	void Start () {
 		PMC_PlayerManagerClass = GetComponent<PlayerManager>();
@@ -59,11 +60,14 @@ public class PlayerDefense : MonoBehaviour {
 	void DoingDamage(float dmg, Vector3 hitDir, NetworkViewID damagingPlayer) {
 		Debug.Log ("Getting damaged");
 		if (!Shielded (hitDir)) {
+				Debug.Log ("Getting damaged");
 				PMC_PlayerManagerClass.PlaySound ("hit");
 				Quaternion rotation = Quaternion.LookRotation (hitDir);
 				Network.Instantiate (hitParticle, transform.position, rotation, 0);
 		} else {
 				dmg *= shieldDmgReduction;
+				Quaternion rotation = Quaternion.LookRotation (hitDir);
+				Network.Instantiate (shieldParticle, transform.position, rotation, 0);
 		}
 
 		LoseHealth (dmg, tag, damagingPlayer);
