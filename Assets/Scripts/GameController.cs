@@ -4,16 +4,16 @@ using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
 	
-	public int playerNumber;
 	public NetworkManager NM_NetworkManager;
 	
 	public List<PlayerDefense> PD_PlayerDefense = new List<PlayerDefense>();
 	public Dictionary<NetworkViewID, GameObject> players = new Dictionary<NetworkViewID, GameObject>();
+	public Dictionary<NetworkViewID, string> playerNames = new Dictionary<NetworkViewID, string>();
 	public NetworkViewID localPlayer;
 	bool showMenu = false;
 	Rect menuRect = new Rect(0,0,100,200);
 	// Use this for initialization
-	
+
 	void Update () {
  		if(Input.GetKeyDown(KeyCode.Escape)) {
 			if(!showMenu){
@@ -58,10 +58,12 @@ public class GameController : MonoBehaviour {
 		Network.Disconnect();
 	}
 	
-	public void GetNewPlayer() {
+	public void FlushPlayers() {
 
 		GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
-		
+
+		players.Clear();
+
 		foreach(GameObject player in gos) {
 			if (player.networkView.isMine) {
 				this.localPlayer = player.networkView.viewID;
@@ -70,7 +72,11 @@ public class GameController : MonoBehaviour {
 			players[player.networkView.viewID] = player;
 		}
 
-
+		foreach (NetworkViewID player in playerNames.Keys) {
+			if (!players.ContainsKey(player)) {
+				playerNames.Remove(player);
+			}
+		}
 
 		GameObject.FindObjectOfType<ScoreManager> ().FlushPlayers (players.Keys);
 	}

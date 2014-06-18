@@ -21,7 +21,6 @@ public class NetworkManager : MonoBehaviour {
 	private string playerName;
 
 	[HideInInspector]
-	public int playerNumber;
 	public GameController GC_GameController;
 	public SpawnController sc;
 
@@ -195,37 +194,33 @@ public class NetworkManager : MonoBehaviour {
 
 	private void JoinServer(HostData hostData)
 	{
+		hostList = null;
+
 		if (selectingIP) {
 			Network.Connect (hostData.ip [0], hostData.port);
 		} else {
 			Network.Connect(hostData);
 		}
-
-		hostList = null;
 	}
 
 	void OnServerInitialized()
 	{
-		GC_GameController.playerNumber ++;
 		SpawnPlayer();
-		networkView.RPC("UpdatePlayerNumber", RPCMode.All, Network.connections.Length, 0);
 	}
 
 	void OnConnectedToServer()
 	{	
-		GC_GameController.playerNumber ++;
 		SpawnPlayer();
 	}
 
-	void OnPlayerConnected(){
+	void OnPlayerConnected(NetworkPlayer player){
 //		print ( Network.connections.Length);
-		networkView.RPC("UpdatePlayerNumber", RPCMode.All, Network.connections.Length, 2);
 	}
 
 	void OnPlayerDisconnected(NetworkPlayer player){
-		networkView.RPC("UpdatePlayerNumber", RPCMode.All, Network.connections.Length, 2);
 		Network.RemoveRPCs(player);
 		Network.DestroyPlayerObjects(player);
+		networkView.RPC("FlushPlayers", RPCMode.All, 2);
 	}
 
 	void OnDisconnectedFromServer(){
@@ -235,27 +230,30 @@ public class NetworkManager : MonoBehaviour {
 	private void SpawnPlayer() {
 		GameObject player = (GameObject)Network.Instantiate(playerPrefab, sc.GetNextSpawnPoint(), Quaternion.identity, 0);
 
-		networkView.RPC ("assignName", RPCMode.All, player.networkView.viewID, playerName);
+		networkView.RPC("FlushPlayers", RPCMode.All, 2);
+		networkView.RPC("AssignName", RPCMode.AllBuffered, player.networkView.viewID, playerName, 3);
 
 		GameObject camera = (GameObject)Instantiate(cameraPrefab, player.transform.position, player.transform.rotation);
 		camera.GetComponent<PlayerCamera>().player = player.transform;
 		//Camera.main = camera;
 		audio.Play();
-
-		//GC_GameController.playerNumber ++;
 	}
 
 	[RPC]
-	void assignName(NetworkViewID objectNetworkId, string name) {
-		NetworkView view = NetworkView.Find (objectNetworkId);
-		view.observed.name = name;
-	}
-
-	[RPC]
-	IEnumerator UpdatePlayerNumber(int players, int wait){
+	IEnumerator AssignName(NetworkViewID objectNetworkId, string name, int wait) {
 		yield return new WaitForSeconds(wait);
-			playerNumber = players;
-			GC_GameController.GetNewPlayer();
+		NetworkView view = NetworkView.Find (objectNetworkId);
+		if (!GC_GameController.players.ContainsKey (objectNetworkId)) {
+			Debug.LogError ("Player not present, cannot assign name");
+		} else {
+			GC_GameController.playerNames[objectNetworkId] = name;
+		}
+	}
+
+	[RPC]
+	IEnumerator FlushPlayers(int wait){
+		yield return new WaitForSeconds(wait);
+		GC_GameController.FlushPlayers();
 	}
 	
 }
