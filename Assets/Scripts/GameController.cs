@@ -11,7 +11,6 @@ public class GameController : MonoBehaviour {
 	public Dictionary<NetworkViewID, string> playerNames = new Dictionary<NetworkViewID, string>();
 	public NetworkViewID localPlayer;
 	bool showMenu = false;
-	Rect menuRect = new Rect(0,0,100,200);
 	// Use this for initialization
 
 	void Update () {
